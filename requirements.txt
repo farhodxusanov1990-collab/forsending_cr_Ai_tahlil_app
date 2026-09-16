@@ -1,0 +1,6 @@
+fastapi
+uvicorn
+apscheduler
+ccxt
+requests
+pydantic
