@@ -2,6 +2,7 @@
 import os
 import json
 import threading
+import concurrent.futures
 from contextlib import asynccontextmanager
 from datetime import datetime, timedelta, timezone
 
@@ -891,25 +892,33 @@ def get_prices():
 
 @app.get("/api/watch")
 def get_watch(tf: str = "1d", limit: int = 30):
-    """Kuzatuv ro'yxati: joriy narx, 24s o'zgarish va grafik uchun narx qatori."""
+    """Kuzatuv ro'yxati: joriy narx, 24s o'zgarish va grafik uchun narx qatori.
+    Koinlar parallel so'raladi (ketma-ket emas) — Binance javobini kutish
+    vaqti koinlar sonidan qat'i nazar deyarli bir xil bo'lib qoladi."""
     if tf not in ("1h", "4h", "1d"):
         raise HTTPException(400, "tf faqat 1h, 4h yoki 1d")
     limit = max(5, min(limit, 120))
     ex = market_data.exchange()
-    out = []
-    for c in db.list_coins():
+    coins = db.list_coins()
+
+    def fetch_one(c):
         try:
             pair = f"{c}/USDT"
             t = ex.fetch_ticker(pair)
             ohlcv = ex.fetch_ohlcv(pair, tf, limit=limit)
-            out.append({
+            return {
                 "coin": c,
                 "price": t["last"],
                 "change24": t.get("percentage"),
                 "series": [{"t": o[0], "c": o[4]} for o in ohlcv],
-            })
+            }
         except Exception as e:
-            out.append({"coin": c, "error": str(e)})
+            return {"coin": c, "error": str(e)}
+
+    if not coins:
+        return []
+    with concurrent.futures.ThreadPoolExecutor(max_workers=min(8, len(coins))) as pool:
+        out = list(pool.map(fetch_one, coins))
     return out
 
 
