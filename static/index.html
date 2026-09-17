@@ -1,1796 +1,1734 @@
 <!DOCTYPE html>
-<html lang="uz">
+<html lang="uz" data-theme="dark">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#10b981">
-<title>Kripto Stol - Shaxsiy Tahlil</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#09090b">
+<title>Kripto Stol</title>
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/static/icon-192.png">
 <link rel="apple-touch-icon" href="/static/icon-192.png">
-<script>setTimeout(()=>document.documentElement.classList.add('ready'),1500);</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
 <style>
-:root{
-  --bg:#f8f9fa; --card:#ffffff; --text:#1a1a1a; --muted:#666666;
-  --border:#e5e7eb; --border2:#f3f4f6; --input-bg:#ffffff; --hover:#f3f4f6;
-  --shadow:0 1px 3px rgba(0,0,0,0.05); --code-bg:#f8f9fa;
+:root {
+  --bg: #09090b; --surface: #18181b; --surface-hover: #27272a;
+  --border: #27272a; --text: #fafafa; --text-muted: #a1a1aa;
+  --primary: #10b981; --primary-dim: rgba(16, 185, 129, 0.15);
+  --danger: #f43f5e; --danger-dim: rgba(244, 63, 94, 0.15);
+  --warning: #f59e0b; --info: #3b82f6;
+  --radius: 16px; --radius-sm: 10px;
+  --font-main: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
 }
-body.dark{
-  --bg:#0f1115; --card:#1a1d24; --text:#e8e8ea; --muted:#9aa0ac;
-  --border:#2b2f38; --border2:#252932; --input-bg:#12151b; --hover:#242832;
-  --shadow:0 1px 3px rgba(0,0,0,0.4); --code-bg:#12151b;
+[data-theme="light"] {
+  --bg: #ffffff; --surface: #f4f4f5; --surface-hover: #e4e4e7;
+  --border: #e4e4e7; --text: #18181b; --text-muted: #71717a;
+  --primary-dim: rgba(16, 185, 129, 0.1); --danger-dim: rgba(244, 63, 94, 0.1);
 }
-*{margin:0;padding:0;box-sizing:border-box}
-html:not(.ready) body{visibility:hidden}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
-  background:var(--bg);color:var(--text);line-height:1.6;transition:background .2s,color .2s}
-.container{max-width:1400px;margin:0 auto;padding:2rem}
-header{background:var(--card);padding:1.5rem 2rem;box-shadow:var(--shadow);margin-bottom:2rem}
-header h1{font-size:1.5rem;font-weight:600;display:flex;align-items:center;gap:.75rem;flex-wrap:wrap}
-header p{color:var(--muted);font-size:0.9rem;margin-top:0.25rem}
-.nav{display:flex;gap:1.5rem;margin-top:1rem;flex-wrap:wrap}
-.nav a{text-decoration:none;color:var(--muted);font-size:0.9rem;cursor:pointer;padding:.25rem 0}
-.nav a:hover,.nav a.active{color:var(--text);font-weight:600;border-bottom:2px solid #10b981}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;margin-bottom:2rem}
-.card{background:var(--card);padding:1.5rem;border-radius:12px;box-shadow:var(--shadow)}
-.card h3{font-size:0.85rem;color:var(--muted);margin-bottom:0.5rem;font-weight:500}
-.card .value{font-size:2rem;font-weight:600}
-.positive{color:#10b981}.negative{color:#ef4444}
-.section{background:var(--card);padding:1.75rem;border-radius:12px;box-shadow:var(--shadow);margin-bottom:1.5rem}
-.section h2{font-size:1.25rem;margin-bottom:1.25rem;font-weight:600}
-.section h3.sub{font-size:1rem;font-weight:600;margin:1.5rem 0 .75rem}
-.form-group{margin-bottom:1rem}
-label{display:block;font-size:0.85rem;color:var(--muted);margin-bottom:0.4rem}
-input,select,textarea{width:100%;padding:0.75rem;border:1px solid var(--border);border-radius:8px;
-  font-size:0.95rem;font-family:inherit;background:var(--input-bg);color:var(--text)}
-textarea{min-height:90px;resize:vertical}
-input:focus,select:focus,textarea:focus{outline:none;border-color:#10b981}
-button{background:#10b981;color:#fff;border:2px solid #10b981;padding:0.75rem 1.4rem;
-  border-radius:8px;font-size:0.95rem;cursor:pointer;font-family:inherit;font-weight:600}
-button:hover{background:#059669;border-color:#059669}
-button.secondary{background:var(--card);color:var(--text);border-color:var(--border)}
-button.secondary:hover{background:var(--hover)}
-button.danger{background:var(--card);color:#f87171;border-color:#fca5a5}
-button.danger:hover{background:#3a1d1d}
-button.sm{padding:0.5rem 1rem;font-size:0.85rem}
-button:disabled{opacity:.5;cursor:default}
-/* Baholash tugmalari — ramkali, mobilga mo'ljallangan */
-.fbtn{background:var(--card);border:2px solid var(--border);color:var(--text);padding:0.6rem 1.1rem;
-  border-radius:10px;font-size:0.9rem;font-weight:600;min-height:44px}
-.fbtn:hover{background:var(--hover);border-color:#9ca3af}
-.fbtn.on{background:#1a1a1a;border-color:#1a1a1a;color:#fff}
-.fbtn.on-green{background:#10b981;border-color:#10b981;color:#fff}
-.fbtn.on-red{background:#ef4444;border-color:#ef4444;color:#fff}
-.fbtn.mini{padding:0.45rem 0.85rem;min-height:40px;font-size:0.85rem}
-table{width:100%;border-collapse:collapse}
-th,td{padding:0.9rem 0.7rem;text-align:left;border-bottom:1px solid var(--border2)}
-th{font-size:0.85rem;color:var(--muted);font-weight:500}
-td{font-size:0.9rem}
-.table-wrap{overflow-x:auto}
-.badge{display:inline-block;padding:0.25rem 0.75rem;border-radius:20px;font-size:0.75rem;font-weight:600}
-.badge-buy{background:#d1fae5;color:#065f46}
-.badge-sell{background:#fee2e2;color:#991b1b}
-.badge-gray{background:var(--hover);color:var(--muted)}
-/* Portfel ranglari: yashil faqat foyda ramzi, shuning uchun koin belgisi neytral */
-.badge-hold{background:#ffedd5;color:#9a3412}      /* sabzi — qo'lda bor */
-.badge-closed{background:var(--hover);color:var(--muted)}    /* kulrang — yopilgan */
-.pf-line{display:flex;flex-wrap:wrap;gap:.4rem .75rem;align-items:center;font-size:.9rem}
-.pf-line .sep{color:var(--border)}
-.dust-note{font-size:.75rem;color:var(--muted)}
-.run-live{margin-top:.35rem;font-size:.85rem;color:var(--muted);display:flex;align-items:center;gap:.4rem}
-.run-live .dot{width:8px;height:8px;border-radius:50%;background:#3b82f6;
-  animation:pulse 1.1s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:.35}50%{opacity:1}}
-.pnl-pill{display:inline-flex;align-items:center;gap:.3rem;padding:.15rem .6rem;
-  border-radius:8px;font-weight:700;font-size:.85rem}
-.pnl-pill.pos{background:#d1fae5;color:#065f46}
-.pnl-pill.neg{background:#fee2e2;color:#991b1b}
-.pnl-pill.flat{background:var(--hover);color:var(--muted)}
-.badge-blue{background:#e0e7ff;color:#3730a3}
-.badge-purple{background:#ede9fe;color:#5b21b6}
-.tabs{display:flex;gap:0.75rem;margin-bottom:1.25rem;flex-wrap:wrap}
-.tab{padding:0.55rem 1.1rem;border-radius:8px;cursor:pointer;font-size:0.9rem;
-  border:2px solid var(--border);color:var(--muted);font-weight:500}
-.tab.active{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
-.watchlist-item{display:flex;justify-content:space-between;align-items:center;gap:.75rem;
-  padding:1rem 0.25rem;border-bottom:1px solid var(--border2);flex-wrap:wrap}
-.watchlist-item:last-child{border-bottom:none}
-.watchlist-item.dragging{opacity:.4}
-.wl-handle{cursor:grab;color:var(--muted);font-size:1.1rem;padding:0 .3rem;user-select:none}
-.wl-handle:active{cursor:grabbing}
-.wl-star{background:none;border:none;font-size:1.2rem;cursor:pointer;color:#d1d5db;padding:0 .2rem;line-height:1}
-.wl-star.on{color:#f59e0b}
-.wl-left{display:flex;align-items:center;gap:.5rem;flex:1;min-width:0}
-.coin-name{font-weight:600}
-.coin-price{font-size:0.85rem;color:var(--muted)}
-.muted{color:var(--muted);font-size:0.85rem}
-.row{display:flex;gap:.75rem;flex-wrap:wrap;align-items:center}
-details summary{cursor:pointer;color:#10b981;font-weight:600;font-size:.9rem;margin-top:.5rem}
-details .disc{white-space:pre-wrap;background:var(--code-bg);border:1px solid var(--border2);border-radius:8px;
-  padding:.9rem;margin-top:.6rem;font-size:.85rem}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
-canvas{max-height:280px;width:100%!important}
-.theme-toggle{background:var(--card);border:2px solid var(--border);color:var(--text);
-  width:40px;height:40px;border-radius:50%;padding:0;font-size:1.1rem;display:flex;
-  align-items:center;justify-content:center;cursor:pointer}
-.theme-toggle:hover{background:var(--hover)}
-.acard-plain{border:1px solid var(--border);border-radius:10px;padding:.85rem 1rem;background:var(--code-bg)}
-.acard-plain summary{margin-top:0!important;list-style:none}
-.acard-plain summary::-webkit-details-marker{display:none}
-.acard-plain summary::marker{content:""}
-.acard-plain summary::before{content:"▸ ";display:inline-block}
-.acard-plain[open]>summary::before{content:"▾ "}
-.last-decision{margin-top:1rem;padding:.85rem 1rem;border-radius:10px;font-size:.85rem;
-  background:#eef2ff;border:1px solid #c7d2fe;color:#3730a3}
-body.dark .last-decision{background:#1e2340;border-color:#3730a3;color:#c7d2fe}
-.last-decision b{font-weight:700}
-#toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:#1a1a1a;
-  color:#fff;padding:0.8rem 1.5rem;border-radius:10px;display:none;z-index:99;font-size:.9rem;
-  box-shadow:0 4px 12px rgba(0,0,0,.2);max-width:92vw;text-align:center}
-.page{display:none}.page.active{display:block}
 
-/* AI Trader statistikasi jadvali */
-.tstat{width:100%;border-collapse:collapse;margin-bottom:.6rem}
-.tstat td{padding:.45rem .3rem;border-bottom:1px solid #f3f4f6;font-size:.9rem}
-.tstat td:first-child{color:#6b7280;width:38%}
-.tstat td:nth-child(2){text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
-.tstat td:last-child{text-align:right;font-size:.82rem;white-space:nowrap}
-.tstat tr.sum td{border-top:2px solid #e5e7eb;border-bottom:none;padding-top:.6rem;font-size:1rem}
-.koef{display:flex;gap:1.2rem;flex-wrap:wrap;font-size:.88rem}
-.koef b{font-size:1.05rem}
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html { overflow-x: hidden; max-width: 100%; }
+body {
+  font-family: var(--font-main); background: var(--bg); color: var(--text);
+  line-height: 1.5; font-size: 15px; overflow-x: hidden; max-width: 100%;
+}
+.num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; letter-spacing: 0.02em; }
 
-/* Yopiladigan tahlil kartasi */
-.acard{background:var(--card);border-radius:12px;box-shadow:var(--shadow);
-  margin-bottom:.9rem;overflow:hidden}
-.acard>summary{list-style:none;cursor:pointer;padding:1rem 1.1rem;display:block;
-  color:inherit;font-weight:400;font-size:1rem;margin:0}
-.acard>summary::-webkit-details-marker{display:none}
-.acard>summary::marker{content:""}
-.acard>summary:hover{background:var(--hover)}
-.acard[open]>summary{border-bottom:1px solid var(--border2)}
-.ahead{display:flex;justify-content:space-between;align-items:center;gap:.5rem;flex-wrap:wrap}
-.achev{display:inline-block;color:#adb5bd;font-size:.7rem;transition:transform .15s}
-.acard[open] .achev{transform:rotate(180deg)}
-.apreview{display:flex;align-items:center;gap:.6rem;margin-top:.65rem;flex-wrap:wrap}
-.apill{font-weight:800;font-size:.85rem;padding:.25rem .75rem;border-radius:8px;color:#fff;letter-spacing:.3px}
-.apill.buy{background:#10b981}.apill.sell{background:#ef4444}.apill.wait{background:#6b7280}
-.asnip{color:#4b5563;font-size:.86rem;margin-top:.55rem;line-height:1.45;
-  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.acard[open] .apreview,.acard[open] .asnip{display:none}
-.abody{padding:.5rem 1.1rem 1.2rem}
+.app-shell { display: flex; min-height: 100vh; }
+.sidebar {
+  width: 260px; background: var(--surface); border-right: 1px solid var(--border);
+  display: flex; flex-direction: column; padding: 1.5rem 1rem; position: fixed;
+  height: 100vh; height: 100dvh; overflow-y: auto; z-index: 50; transition: transform 0.3s ease;
+}
+.main-content {
+  flex: 1; min-width: 0; margin-left: 260px; padding: 2rem; max-width: 1400px;
+  padding-bottom: 100px; overflow-x: hidden;
+}
 
-/* Hakam xulosasi kartasi */
-.verdict-banner{border-radius:10px;padding:1rem 1.25rem;color:#fff;display:flex;
-  justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem;margin:.75rem 0 1rem}
-.verdict-banner .act{font-size:1.35rem;font-weight:800;letter-spacing:.5px}
-.vb-buy{background:#10b981}.vb-sell{background:#ef4444}.vb-wait{background:#6b7280}
-.conf-wrap{margin:.5rem 0 .9rem}
-.conf-bar{height:10px;background:#f3f4f6;border-radius:6px;overflow:hidden}
-.conf-fill{height:100%;background:#10b981;border-radius:6px}
-.levels{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin:.6rem 0}
-.lvl{border:1.5px solid #e5e7eb;border-radius:10px;padding:.5rem .8rem;font-size:.8rem;background:#fafafa}
-.lvl b{display:block;font-size:.95rem;font-variant-numeric:tabular-nums}
-.lvl.stop{border-color:#fca5a5;background:#fef2f2}
-.lvl.entry{border-color:#6ee7b7;background:#ecfdf5;grid-column:1 / -1}
-.lvl.tgt{border-color:#bfdbfe;background:#eff6ff}
-body.dark .lvl{background:var(--code-bg);border-color:var(--border)}
-body.dark .lvl.stop{border-color:#7f1d1d;background:#2a1414}
-body.dark .lvl.entry{border-color:#065f46;background:#0f2e22}
-body.dark .lvl.tgt{border-color:#1e40af;background:#16233f}
-body.dark .conf-bar{background:var(--hover)}
+.brand { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 2rem; padding: 0 0.75rem; }
+.brand-icon {
+  width: 36px; height: 36px; background: var(--primary); border-radius: 10px;
+  display: flex; align-items: center; justify-content: center; font-weight: 800; color: #000; font-size: 1.1rem;
+}
+.brand-text h1 { font-size: 1.1rem; font-weight: 700; letter-spacing: -0.03em; }
+.brand-text p { font-size: 0.75rem; color: var(--text-muted); }
 
-/* Narx shkalasi — vertikal */
-.pscale{position:relative;margin:1.3rem 0 .3rem}
-.pscale .rail{position:absolute;left:16px;width:6px;background:#e9ecef;border-radius:4px}
-.pscale .zone{position:absolute;left:9px;width:20px;border-radius:7px;box-sizing:border-box;
-  background:rgba(16,185,129,.28);border:2px solid #10b981}
-.pscale .tick{position:absolute;left:5px;width:28px;height:7px;border-radius:4px;transform:translateY(-50%)}
-.pscale .tick.stop{background:#ef4444}
-.pscale .tick.tgt{background:#3b82f6}
-.pscale .tick.cur{background:#1a1a1a;height:4px;width:36px;left:1px;box-shadow:0 0 0 3px rgba(26,26,26,.07)}
-.pscale .plabel{position:absolute;left:44px;right:0;transform:translateY(-50%);
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:.86rem;line-height:1.2}
-.pscale-note{font-size:.7rem;color:#9ca3af;margin:-.1rem 0 .5rem 44px}
-.pscale .plabel b{font-weight:700;font-variant-numeric:tabular-nums}
-.pscale .plabel .nm{color:#6b7280;margin-left:.35rem}
-.pscale .plabel .pp{font-style:normal;font-size:.74rem;margin-left:.35rem;padding:.06em .38em;border-radius:5px}
-.pscale .plabel .pp.up{background:#d1fae5;color:#065f46}
-.pscale .plabel .pp.dn{background:#fee2e2;color:#991b1b}
-.pscale .plabel.stop b{color:#dc2626}
-.pscale .plabel.tgt b{color:#2563eb}
-.pscale .plabel.entry b{color:#059669}
-.pscale .plabel.cur .nm{color:#1a1a1a;font-weight:600}
-.pscale .plabel.cur .pp{background:#f3f4f6;color:#4b5563}
+.nav-links { display: flex; flex-direction: column; gap: 0.25rem; flex: 1; overflow-y: auto; }
+.nav-item {
+  display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem;
+  border-radius: var(--radius-sm); color: var(--text-muted); text-decoration: none;
+  font-weight: 500; font-size: 0.9rem; transition: all 0.2s; cursor: pointer;
+}
+.nav-item:hover { background: var(--surface-hover); color: var(--text); }
+.nav-item.active { background: var(--primary-dim); color: var(--primary); font-weight: 600; }
+.nav-item svg { width: 20px; height: 20px; stroke-width: 2; flex-shrink: 0; }
 
-/* AI bloklari */
-.ai-block{border:1.5px solid #e5e7eb;border-radius:10px;padding:1rem;margin-top:.9rem}
-.ai-block .ai-head{display:flex;justify-content:space-between;align-items:center;gap:.5rem;flex-wrap:wrap}
-.ai-short{margin:.5rem 0;font-size:.92rem}
-/* Urg'u ranglari */
-.hl-up{background:#d1fae5;color:#065f46;font-weight:700;padding:.05em .3em;border-radius:4px}
-.hl-down{background:#fee2e2;color:#991b1b;font-weight:700;padding:.05em .3em;border-radius:4px}
-.hl-wait{background:#fef3c7;color:#92400e;font-weight:700;padding:.05em .3em;border-radius:4px}
-.hl-act{display:block;background:#eff6ff;border-left:4px solid #3b82f6;color:#1e3a8a;
-  font-weight:700;padding:.7rem .9rem;border-radius:0 8px 8px 0;margin:.7rem 0}
-.hl-act::before{content:"👉 Nima qilish kerak: ";font-weight:800}
-/* Umumiy kalit — burchakdagi katta on/off tugma */
-.global-btn{border:none;border-radius:20px;padding:.55rem 1.2rem;font-weight:700;
-  font-size:.85rem;cursor:pointer;color:#fff;white-space:nowrap;flex-shrink:0}
-.global-btn.on{background:#10b981}
-.global-btn.off{background:#ef4444}
-.global-btn:hover{opacity:.92}
+.sidebar-footer { padding-top: 1rem; border-top: 1px solid var(--border); margin-top: auto; }
+.global-status {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.75rem; background: var(--surface-hover); border-radius: var(--radius-sm);
+}
+.status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-muted); }
+.status-dot.on { background: var(--primary); box-shadow: 0 0 8px var(--primary); }
+.live-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--primary); margin-right: 0.3rem; animation: pulse 1.1s ease-in-out infinite; }
+@keyframes pulse { 0%, 100% { opacity: 0.35; } 50% { opacity: 1; } }
 
-/* Holat qatorlari — "yoniq/o'chiq/keyingi vaqt" kabi muhim, lekin oddiy matn bo'lmagan ma'lumot */
-.status-chip{display:inline-flex;align-items:center;gap:.5rem;padding:.55rem .9rem;
-  border-radius:8px;font-size:.85rem;font-weight:600;border:1.5px solid transparent}
-.status-chip.on{background:#ecfdf5;border-color:#6ee7b7;color:#065f46}
-.status-chip.off{background:#f3f4f6;border-color:#e5e7eb;color:#6b7280}
-.status-chip.info{background:#eff6ff;border-color:#bfdbfe;color:#1e40af}
-body.dark .status-chip.on{background:#0f2e22;border-color:#065f46;color:#6ee7b7}
-body.dark .status-chip.off{background:var(--hover);border-color:var(--border);color:var(--muted)}
-body.dark .status-chip.info{background:#16233f;border-color:#1e40af;color:#93c5fd}
-.status-chip .dot{width:7px;height:7px;border-radius:50%;background:currentColor;flex-shrink:0}
-@media (max-width:768px){
-  .container{padding:0.9rem}
-  header{padding:1rem}
-  .grid,.grid2{grid-template-columns:1fr}
-  .nav{gap:0.9rem}
-  th,td{padding:0.6rem 0.45rem;font-size:0.82rem}
-  .section{padding:1.1rem}
-  button{padding:0.7rem 1.1rem}
+.bottom-nav {
+  display: none; position: fixed; bottom: 0; left: 0; right: 0;
+  background: color-mix(in srgb, var(--surface) 85%, transparent);
+  backdrop-filter: blur(12px); border-top: 1px solid var(--border);
+  padding: 0.5rem 1rem calc(0.5rem + env(safe-area-inset-bottom));
+  z-index: 100; justify-content: space-around;
+}
+.b-nav-item {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  color: var(--text-muted); text-decoration: none; font-size: 0.65rem; font-weight: 600;
+  padding: 0.5rem; border-radius: 8px; transition: color 0.2s;
+}
+.b-nav-item.active { color: var(--primary); }
+.b-nav-item svg { width: 22px; height: 22px; }
+
+.bento-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+.bento-grid > * { min-width: 0; }
+.bento-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 1.25rem; transition: border-color 0.2s; overflow: hidden;
+}
+.bento-card:hover { border-color: var(--text-muted); }
+.bento-card.span-2 { grid-column: span 2; }
+.bento-card.span-4 { grid-column: span 4; }
+.bento-card h3 {
+  font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;
+  color: var(--text-muted); font-weight: 600; margin-bottom: 0.5rem;
+}
+.bento-card .value { font-size: 1.75rem; font-weight: 700; letter-spacing: -0.03em; }
+
+.section-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+.badge {
+  display: inline-flex; align-items: center; padding: 0.25rem 0.6rem; border-radius: 6px;
+  font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em;
+}
+.badge-buy { background: var(--primary-dim); color: var(--primary); }
+.badge-sell { background: var(--danger-dim); color: var(--danger); }
+.badge-wait { background: rgba(161, 161, 170, 0.15); color: var(--text-muted); }
+.badge-info { background: rgba(59, 130, 246, 0.15); color: var(--info); }
+.positive { color: var(--primary); }
+.negative { color: var(--danger); }
+.muted { color: var(--text-muted); font-size: 0.85rem; }
+.soft { color: color-mix(in srgb, var(--text) 55%, var(--text-muted)); }
+.key-num { color: var(--text); font-weight: 700; }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+  padding: 0.75rem 1.25rem; border-radius: var(--radius-sm); font-weight: 600;
+  font-size: 0.9rem; cursor: pointer; border: none; transition: all 0.2s; font-family: inherit;
+  min-height: 44px;
+}
+.btn-primary { background: var(--primary); color: #000; border: 1px solid color-mix(in srgb, var(--primary) 60%, black); }
+.btn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); }
+.btn-secondary { background: var(--surface-hover); color: var(--text); border: 1px solid color-mix(in srgb, var(--text) 22%, transparent); }
+.btn-secondary:hover { background: var(--border); }
+.btn-danger { background: var(--danger-dim); color: var(--danger); border: 1px solid color-mix(in srgb, var(--danger) 45%, transparent); }
+.btn-warning { background: var(--warning); color: #000; border: 1px solid color-mix(in srgb, var(--warning) 60%, black); }
+.btn-warning:hover { filter: brightness(1.1); }
+.btn-sm { padding: 0.5rem 1rem; font-size: 0.8rem; min-height: 36px; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+input, select, textarea {
+  width: 100%; background: var(--bg); border: 1px solid var(--border);
+  color: var(--text); padding: 0.75rem; border-radius: var(--radius-sm);
+  font-family: inherit; font-size: 0.9rem; transition: border-color 0.2s;
+}
+input:focus, select:focus, textarea:focus { outline: none; border-color: var(--primary); }
+.form-row { display: flex; gap: 0.75rem; margin-bottom: 1rem; flex-wrap: wrap; min-width: 0; }
+.form-row > * { min-width: 0; }
+.form-group { flex: 1; min-width: 150px; }
+.form-group label { display: block; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.4rem; font-weight: 600; }
+
+.verdict-core {
+  background: linear-gradient(135deg, var(--surface) 0%, var(--bg) 100%);
+  border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem;
+  text-align: center; margin: 1rem 0; position: relative; overflow: hidden;
+}
+.verdict-core.buy { border-color: var(--primary); box-shadow: 0 0 30px var(--primary-dim); }
+.verdict-core.sell { border-color: var(--danger); box-shadow: 0 0 30px var(--danger-dim); }
+.verdict-core .act { font-size: 2rem; font-weight: 800; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+.verdict-core.buy .act { color: var(--primary); }
+.verdict-core.sell .act { color: var(--danger); }
+
+.pscale { position: relative; margin: 1.3rem 0 0.3rem; }
+.pscale .rail { position: absolute; left: 16px; width: 6px; background: var(--border); border-radius: 4px; }
+.pscale .zone { position: absolute; left: 9px; width: 20px; border-radius: 7px; box-sizing: border-box; background: var(--primary-dim); border: 2px solid var(--primary); }
+.pscale .tick { position: absolute; left: 5px; width: 28px; height: 7px; border-radius: 4px; transform: translateY(-50%); }
+.pscale .tick.stop { background: var(--danger); }
+.pscale .tick.tgt { background: var(--info); }
+.pscale .tick.cur { background: var(--text); height: 4px; width: 36px; left: 1px; box-shadow: 0 0 0 3px rgba(255,255,255,.07); }
+.pscale .plabel { position: absolute; left: 44px; right: 0; transform: translateY(-50%); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 0.86rem; line-height: 1.2; color: var(--text); }
+.pscale-note { font-size: 0.7rem; color: var(--text-muted); margin: -0.1rem 0 0.5rem 44px; }
+.pscale .plabel b { font-weight: 700; font-variant-numeric: tabular-nums; }
+.pscale .plabel .nm { color: var(--text-muted); margin-left: 0.35rem; }
+.pscale .plabel .pp { font-style: normal; font-size: 0.74rem; margin-left: 0.35rem; padding: 0.06em 0.38em; border-radius: 5px; }
+.pscale .plabel .pp.up { background: var(--primary-dim); color: var(--primary); }
+.pscale .plabel .pp.dn { background: var(--danger-dim); color: var(--danger); }
+.pscale .plabel.stop b { color: var(--danger); }
+.pscale .plabel.tgt b { color: var(--info); }
+.pscale .plabel.entry b { color: var(--primary); }
+.pscale .plabel.cur .nm { color: var(--text); font-weight: 600; }
+.pscale .plabel.cur .pp { background: var(--surface-hover); color: var(--text-muted); }
+.chart-box { position: relative; height: 260px; }
+.chart-box canvas { max-height: 100%; }
+
+.analysis-item {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  margin-bottom: 0.75rem; overflow: hidden; transition: border-color 0.2s;
+}
+.analysis-item:hover { border-color: var(--text-muted); }
+.analysis-header {
+  padding: 1rem 1.25rem; display: flex; justify-content: space-between; align-items: center;
+  cursor: pointer; user-select: none;
+}
+.analysis-body { padding: 0 1.25rem 1.25rem; display: none; border-top: 1px solid var(--border); }
+.analysis-item.open .analysis-body { display: block; padding-top: 1rem; }
+.analysis-item.open .chevron { transform: rotate(180deg); }
+.chevron { transition: transform 0.2s; color: var(--text-muted); }
+summary::-webkit-details-marker { display: none; }
+summary { list-style: none; }
+summary.summary-btn { cursor: pointer; font-size: 0.85rem; color: var(--text-muted); display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.4rem 0.75rem; border-radius: var(--radius-sm); border: 1px solid color-mix(in srgb, var(--text) 22%, transparent); background: var(--surface-hover); width: fit-content; }
+summary.summary-btn:hover { background: var(--border); }
+details[open] > summary .chevron { transform: rotate(180deg); }
+
+.data-table { width: 100%; border-collapse: collapse; }
+.table-wrap { overflow-x: auto; max-width: 100%; }
+.analysis-body p, .bento-card p { overflow-wrap: anywhere; }
+.pscale .plabel { max-width: 100%; }
+.data-table th {
+  text-align: left; padding: 0.75rem; font-size: 0.7rem; text-transform: uppercase;
+  color: var(--text-muted); font-weight: 600; border-bottom: 1px solid var(--border);
+}
+.data-table td {
+  padding: 0.85rem 0.75rem; border-bottom: 1px solid var(--border); font-size: 0.9rem;
+}
+.data-table tr:last-child td { border-bottom: none; }
+
+.page { display: none; animation: fadeIn 0.25s ease; }
+.page.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+#toast {
+  position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%) translateY(20px);
+  background: var(--text); color: var(--bg); padding: 0.75rem 1.5rem; border-radius: 50px;
+  font-size: 0.85rem; font-weight: 600; z-index: 999; opacity: 0; pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); white-space: nowrap;
+}
+#toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+.coin-item {
+  display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem;
+  background: var(--surface-hover); border-radius: var(--radius-sm); margin-bottom: 0.5rem;
+  cursor: grab;
+}
+.coin-item:active { cursor: grabbing; }
+.coin-item.dragging { opacity: 0.5; }
+.coin-handle { color: var(--text-muted); cursor: grab; }
+
+@media (max-width: 1024px) {
+  .bento-grid { grid-template-columns: repeat(2, 1fr); }
+  .bento-card.span-4 { grid-column: span 2; }
+}
+@media (max-width: 768px) {
+  .sidebar { display: none; }
+  .main-content { margin-left: 0; padding: 1rem; padding-bottom: 90px; }
+  .bottom-nav { display: flex; }
+  .bento-grid { grid-template-columns: 1fr; }
+  .bento-card.span-2, .bento-card.span-4 { grid-column: span 1; }
+  .form-row { flex-direction: column; }
+  .form-group { min-width: 100%; }
+  .verdict-core .act { font-size: 1.5rem; }
+  #toast { bottom: 100px; }
 }
 </style>
 </head>
 <body>
-<header>
-  <div class="container" style="padding:0;display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;flex-wrap:wrap">
-    <div>
-      <h1>Kripto Stol <span id="run-status" class="badge badge-blue" style="display:none">Tahlil ketmoqda…</span></h1>
-      <div id="run-live" class="run-live" style="display:none"></div>
-      <p>Shaxsiy tahlil va jurnal</p>
-      <nav class="nav">
-        <a data-page="bozor">Bozor</a>
-        <a data-page="tahlil" class="active">Tahlillar</a>
-        <a data-page="nima">Nima bo'ldi?</a>
-        <a data-page="uzoq">Uzoq muddat</a>
-        <a data-page="jurnal">Jurnal</a>
-        <a data-page="trader">AI Trader</a>
-        <a data-page="stat">Statistika</a>
-        <a data-page="sozlama">Sozlamalar</a>
-      </nav>
+
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-icon">KS</div>
+      <div class="brand-text">
+        <h1>Kripto Stol <span id="run-status" class="badge badge-info" style="display:none;margin-left:0.4rem;vertical-align:middle">●</span></h1>
+        <p>AI Tahlil & Jurnal</p>
+      </div>
     </div>
-    <div class="row" style="gap:.6rem">
-      <button id="theme-toggle" class="theme-toggle" title="Tungi rejim">🌙</button>
-      <button id="global-toggle" class="global-btn">Yuklanmoqda…</button>
-    </div>
-  </div>
-</header>
-
-<div class="container">
-
-  <div class="grid">
-    <div class="card"><h3 id="sum-first-title">Jami tahlillar</h3>
-      <div class="value" id="sum-analyses">0</div>
-      <div id="sum-first-sub" class="muted"></div></div>
-    <div class="card"><h3>Sof natija (jurnal)</h3><div class="value" id="sum-net">$0</div>
-      <div id="sum-net-pct" class="muted"></div></div>
-    <div class="card"><h3>Ochiq savdolar</h3><div class="value" id="sum-open">0</div></div>
-  </div>
-
-  <!-- ============ BOZOR ============ -->
-  <div class="page" id="bozor">
-    <div class="section" id="fng-card">
-      <h2>Bozor kayfiyati <span class="badge badge-gray">Fear &amp; Greed Index</span></h2>
-      <div class="row" style="align-items:flex-start;gap:1.5rem">
-        <div style="min-width:150px">
-          <div id="fng-value" style="font-size:2.6rem;font-weight:800">—</div>
-          <div id="fng-label" style="font-weight:700"></div>
+    <nav class="nav-links">
+      <a class="nav-item active" data-page="tahlil">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        Tahlillar
+      </a>
+      <a class="nav-item" data-page="bozor">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        Bozor
+      </a>
+      <a class="nav-item" data-page="nima">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+        Nima bo'ldi?
+      </a>
+      <a class="nav-item" data-page="uzoq">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Uzoq muddat
+      </a>
+      <a class="nav-item" data-page="jurnal">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        Jurnal
+      </a>
+      <a class="nav-item" data-page="trader">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+        AI Trader
+      </a>
+      <a class="nav-item" data-page="stat">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        Statistika
+      </a>
+      <a class="nav-item" data-page="sozlama">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Sozlamalar
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="global-status" id="theme-row" style="margin-bottom:0.5rem;cursor:pointer">
+        <div style="display:flex;align-items:center;gap:0.5rem">
+          <span style="font-size:0.8rem;font-weight:600">Rejim</span>
         </div>
-        <div style="flex:1;min-width:220px">
-          <div style="height:14px;border-radius:8px;position:relative;
-            background:linear-gradient(90deg,#ef4444,#f59e0b,#9ca3af,#84cc16,#10b981)">
-            <div id="fng-marker" style="position:absolute;top:-5px;width:4px;height:24px;
-              background:#1a1a1a;border-radius:2px;transform:translateX(-50%);left:50%"></div>
+        <button class="btn btn-sm btn-secondary" id="theme-toggle" style="padding:0.4rem 0.8rem">🌙</button>
+      </div>
+      <div class="global-status">
+        <div style="display:flex;align-items:center;gap:0.5rem">
+          <div class="status-dot" id="global-dot"></div>
+          <span style="font-size:0.8rem;font-weight:600" id="global-text">Yuklanmoqda...</span>
+        </div>
+        <button class="btn btn-sm btn-secondary" id="global-toggle" style="padding:0.4rem 0.8rem">O'zgartirish</button>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <div id="run-live" style="display:none;align-items:center;gap:0.5rem;background:var(--primary-dim);color:var(--primary);padding:0.6rem 1rem;border-radius:var(--radius-sm);margin-bottom:1rem;font-size:0.85rem;font-weight:600">
+      <span style="width:8px;height:8px;border-radius:50%;background:var(--primary);box-shadow:0 0 6px var(--primary)"></span>
+      <span id="run-live-text"></span>
+    </div>
+    
+    <div class="page active" id="tahlil">
+      <div class="bento-grid">
+        <div class="bento-card">
+          <h3>Jami Tahlillar</h3>
+          <div class="value num" id="sum-analyses">0</div>
+        </div>
+        <div class="bento-card">
+          <h3>Sof Natija</h3>
+          <div class="value num" id="sum-net">$0</div>
+          <div id="sum-net-pct" class="muted" style="margin-top:0.25rem"></div>
+        </div>
+        <div class="bento-card">
+          <h3>Ochiq Savdolar</h3>
+          <div class="value num" id="sum-open">0</div>
+        </div>
+        <div class="bento-card" style="display:flex;flex-direction:column;justify-content:center">
+          <div class="form-row" style="margin:0">
+            <select id="manual-coin" style="flex:2"><option value="">Barcha koinlar</option></select>
+            <button class="btn btn-primary" id="btn-analyze" style="flex:1">Tahlil</button>
           </div>
-          <div class="row" style="justify-content:space-between;margin-top:.25rem">
-            <span class="muted" style="font-size:.75rem">0 · qo'rquv</span>
-            <span class="muted" style="font-size:.75rem">ochko'zlik · 100</span>
+        </div>
+      </div>
+      <div id="analyses-list"></div>
+    </div>
+
+    <div class="page" id="bozor">
+      <div class="section-title">
+        <span>Bozor Kayfiyati</span>
+        <button class="btn btn-sm btn-secondary" id="btn-market-refresh" style="margin-left:auto">Yangilash</button>
+      </div>
+      <div class="bento-grid">
+        <div class="bento-card span-2" id="fng-card">
+          <h3>Fear & Greed Index</h3>
+          <div class="form-row" style="align-items:flex-start;margin-top:0.5rem">
+            <div style="min-width:110px">
+              <div class="value num" id="fng-value" style="font-size:2.6rem;line-height:1">—</div>
+              <div id="fng-label" style="font-weight:700;margin-top:0.4rem"></div>
+            </div>
+            <div style="flex:1;min-width:180px;width:100%">
+              <div style="height:10px;border-radius:8px;position:relative;background:linear-gradient(90deg,#ef4444,#f59e0b,#9ca3af,#84cc16,#10b981)">
+                <div id="fng-marker" style="position:absolute;top:-4px;width:3px;height:18px;background:var(--text);border-radius:2px;transform:translateX(-50%);left:50%"></div>
+              </div>
+              <div class="form-row" style="justify-content:space-between;margin:0.3rem 0 0">
+                <span class="muted" style="font-size:0.7rem">0 · qo'rquv</span>
+                <span class="muted" style="font-size:0.7rem">ochko'zlik · 100</span>
+              </div>
+              <div class="chart-box" style="height:90px;margin-top:0.5rem"><canvas id="ch-fng"></canvas></div>
+            </div>
           </div>
-          <canvas id="ch-fng" style="max-height:120px;margin-top:.75rem"></canvas>
+        </div>
+        <div class="bento-card span-2">
+          <h3>Davr</h3>
+          <div class="form-row" style="margin-top:1rem">
+            <button class="btn btn-sm btn-primary" data-mtf="1h" data-mlimit="24">24 soat</button>
+            <button class="btn btn-sm btn-secondary" data-mtf="4h" data-mlimit="42">7 kun</button>
+            <button class="btn btn-sm btn-secondary" data-mtf="1d" data-mlimit="30">30 kun</button>
+            <button class="btn btn-sm btn-secondary" data-mtf="1d" data-mlimit="120">4 oy</button>
+          </div>
         </div>
       </div>
-      <p class="muted" style="margin-top:.5rem">Past qiymat — bozor qo'rquvda (ko'pincha arzon narxlar davri),
-        yuqori qiymat — bozor qizigan (ehtiyotkorlik davri). Bu ko'rsatkich tahlillarga ham avtomatik qo'shiladi.</p>
+      <div class="section-title" style="margin-top:1.5rem">Kuzatuv Ro'yxati</div>
+      <div id="market-list" class="bento-grid"></div>
     </div>
-    <div class="section">
-      <div class="row" style="justify-content:space-between">
-        <div class="tabs" style="margin-bottom:0">
-          <div class="tab active" data-mtf="1h" data-mlimit="24">24 soat</div>
-          <div class="tab" data-mtf="4h" data-mlimit="42">7 kun</div>
-          <div class="tab" data-mtf="1d" data-mlimit="30">30 kun</div>
-          <div class="tab" data-mtf="1d" data-mlimit="120">4 oy</div>
+
+    <div class="page" id="nima">
+      <div class="section-title">Tezkor Harakat Tahlili</div>
+      <div class="bento-card span-4" style="margin-bottom:1.5rem">
+        <div class="form-row">
+          <button class="btn btn-primary" id="btn-nima-auto" style="flex:1">🌐 Butun bozor tahlili</button>
         </div>
-        <button class="sm secondary" id="btn-market-refresh">Yangilash</button>
+        <div class="form-row" style="margin-top:0.5rem">
+          <select id="nima-coin" style="flex:2"></select>
+          <button class="btn btn-secondary" id="btn-nima-coin" style="flex:1">Koin bo'yicha</button>
+        </div>
       </div>
+      <div id="nima-list"></div>
     </div>
-    <div id="market-list"></div>
-  </div>
 
-  <!-- ============ TAHLILLAR ============ -->
-  <div class="page active" id="tahlil">
-    <div class="section">
-      <h2>Tahlil boshqaruvi</h2>
-      <div class="row">
-        <select id="manual-coin" style="min-width:180px;max-width:240px"><option value="">Barcha koinlar</option></select>
-        <button id="btn-analyze">Hozir tahlil qil</button>
+    <div class="page" id="uzoq">
+      <div class="section-title">Uzoq Muddatli Tahlil</div>
+      <div class="bento-card span-4" style="margin-bottom:1.5rem">
+        <div class="form-row">
+          <select id="long-coin" style="flex:2"><option value="">Barcha koinlar</option></select>
+          <button class="btn btn-primary" id="btn-long" style="flex:1">Tahlil qil</button>
+        </div>
+        <p class="muted" style="margin-top:0.5rem">1 / 2-3 / 6 oylik va 1 yillik istiqbol. Faqat qo'lda ishlaydi.</p>
       </div>
-      <p class="muted" style="margin-top:.75rem">Avtomatik tahlil har kuni belgilangan vaqtlarda ishlaydi</p>
+      <div id="long-list"></div>
     </div>
-    <div id="analyses-list"></div>
-  </div>
 
-  <!-- ============ NIMA BO'LDI? ============ -->
-  <div class="page" id="nima">
-    <div class="section">
-      <h2>Nima bo'ldi? <span class="badge badge-blue">tezkor harakat tahlili</span></h2>
-      <div class="row" style="margin-bottom:.75rem">
-        <button id="btn-nima-auto">🌐 Butun bozor — nima bo'ldi?</button>
+    <div class="page" id="jurnal">
+      <div class="section-title">Savdo Jurnali</div>
+      <div class="bento-grid" style="margin-bottom:1.5rem">
+        <div class="bento-card"><h3>Jami savdolar</h3><div class="value num" id="j-sum-count">0</div><div class="muted" id="j-sum-sub" style="margin-top:0.25rem;font-size:0.8rem"></div></div>
+        <div class="bento-card"><h3>Sof Natija (jurnal)</h3><div class="value num" id="j-sum-net">$0</div><div class="muted" id="j-sum-net-pct" style="margin-top:0.25rem"></div></div>
+        <div class="bento-card"><h3>Ochiq Savdolar</h3><div class="value num" id="j-sum-open">0</div></div>
       </div>
-      <div class="row">
-        <select id="nima-coin" style="min-width:180px;max-width:240px"></select>
-        <button class="secondary" id="btn-nima-coin">Shu koin bo'yicha</button>
-      </div>
-      <p class="muted" style="margin-top:.75rem"><b>Butun bozor</b> — BTC va altkoinlar birgalikda nega
-        o'sdi yoki tushdi: umumiy yangiliklar (CoinDesk, Cointelegraph, Decrypt) va bozor
-        raqamlari asosida sabab qidiriladi.<br>
-        <b>Koin bo'yicha</b> — tanlangan koinning o'z harakati va unga oid yangiliklar.<br>
-        Ishonchli sabab topilmasa, AI buni ochiq aytadi.</p>
-    </div>
-    <div id="nima-list"></div>
-  </div>
-
-  <!-- ============ UZOQ MUDDAT ============ -->
-  <div class="page" id="uzoq">
-    <div class="section">
-      <h2>Uzoq muddatli tahlil</h2>
-      <div class="row">
-        <select id="long-coin" style="min-width:180px;max-width:240px"><option value="">Barcha koinlar</option></select>
-        <button id="btn-long">Tahlil qil</button>
-      </div>
-      <p class="muted" style="margin-top:.75rem">1 / 2-3 / 6 oylik va 1 yillik istiqbol. Faqat qo'lda ishlaydi.
-        Muddat uzaygan sari noaniqlik oshadi.</p>
-    </div>
-    <div id="long-list"></div>
-  </div>
-
-  <!-- ============ JURNAL ============ -->
-  <div class="page" id="jurnal">
-    <div class="section">
-      <h2>Savdo qo'shish</h2>
-      <div class="row">
+      <div class="bento-card span-4" style="margin-bottom:1.5rem;text-align:center;padding:2rem;border-style:dashed">
+        <h3 style="margin-bottom:1rem">Skrinshot orqali qo'shish</h3>
         <input type="file" id="j-file" accept="image/*" style="display:none">
-        <button id="j-upload-btn">📷 Binance skrinshotini yuklash</button>
-        <button class="secondary" id="j-manual-btn">Qo'lda kiritish</button>
+        <div class="form-row" style="justify-content:center">
+          <button class="btn btn-primary" id="j-upload-btn">📷 Skrinshot yuklash</button>
+          <button class="btn btn-secondary" id="j-manual-btn">Qo'lda kiritish</button>
+        </div>
+        <div id="j-draft" style="margin-top:1.5rem;text-align:left"></div>
       </div>
-      <p class="muted" style="margin-top:.6rem">Binance ilovasida savdo tafsilotlari sahifasining
-        skrinshotini oling (№ ordera, narx, miqdor, komissiya ko'ringan holda) va shu yerga yuklang.
-        AI o'qiydi, siz tasdiqlaysiz — hech narsa avtomatik saqlanmaydi.</p>
-      <div id="j-draft"></div>
-    </div>
-    <div class="section">
-      <h2>Portfel <span class="badge badge-gray">amaldagi koinlar</span></h2>
+      <div class="section-title" style="margin-top:2rem">Portfel</div>
       <div id="j-positions"></div>
-    </div>
-    <div class="section">
-      <h2>Tarix <span class="badge badge-gray">yopilgan savdolar</span></h2>
-      <div id="j-history"></div>
-    </div>
-  </div>
-
-  <!-- ============ AI TRADER ============ -->
-  <div class="page" id="trader">
-    <div class="section global-warn negative" style="display:none;font-weight:600">
-      ⏸ Umumiy kalit o'chiq — hech qanday jarayon ishlamayapti. Yuqoridagi burchakdagi
-      tugmani yoqing.
-    </div>
-    <div class="section">
-      <h2>AI Trader <span class="badge badge-purple">avtomatik spot savdo</span></h2>
-      <div class="row" style="margin-bottom:1rem">
-        <button class="fbtn" id="tr-toggle">Yuklanmoqda…</button>
-        <button class="fbtn" id="tr-mode-paper">🟡 Sinov (qog'oz)</button>
-        <button class="fbtn" id="tr-mode-real">🟢 Haqiqiy savdo</button>
-      </div>
-      <p class="muted">Yuqoridagi tugma — umumiy kalit. O'chiq bo'lsa, pastdagi ikkala
-        rejim (bosh tahlilga bog'liq va tezkor) ham ishlamaydi. Rejim (sinov/haqiqiy)
-        ikkalasi uchun ham umumiy — bitta Binance hisobi ishlatiladi.</p>
+      <details style="margin-top:2rem" id="j-history-wrap">
+        <summary class="bento-card" style="cursor:pointer;display:flex;align-items:center;gap:0.5rem;font-size:1.25rem;font-weight:700;list-style:none">
+          Yopilgan Tarix <span class="muted" id="j-history-count" style="font-weight:400;font-size:0.85rem"></span>
+          <svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-left:auto"><polyline points="6 9 12 15 18 9"/></svg>
+        </summary>
+        <div id="j-history-list" style="margin-top:1rem"></div>
+      </details>
     </div>
 
-    <div class="section">
-      <h3 class="sub" style="margin-top:0">Bosh tahlilga bog'liq <span class="badge badge-blue">standart</span></h3>
-      <p class="muted" id="tr-swing-status" style="margin-bottom:.75rem"></p>
-      <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-bottom:0">
-        <div class="form-group"><label>Bir savdoga maksimal summa ($)</label>
-          <input id="tr-max-usd" type="number" step="any"></div>
-        <div class="form-group"><label>Kunlik maksimal savdolar</label>
-          <input id="tr-max-daily" type="number" step="1"></div>
-        <div class="form-group"><label>Eng kam ishonch darajasi (%)</label>
-          <input id="tr-min-conf" type="number" step="1"></div>
-        <div class="form-group"><label>Bir vaqtda ochiq pozitsiya</label>
-          <input id="tr-max-open" type="number" step="1"></div>
-        <div class="form-group"><label>Sovish muddati (soat)</label>
-          <input id="tr-cooldown" type="number" step="1"></div>
-        <div class="form-group"><label>Kunlik stop chegarasi</label>
-          <input id="tr-max-stops" type="number" step="1"></div>
-        <div class="form-group"><label>Kuzatuv oralig'i (daqiqa)</label>
-          <input id="tr-watch-min" type="number" step="1"></div>
-      </div>
-      <div class="row">
-        <button class="sm" id="tr-save">Saqlash</button>
-        <button class="sm secondary" id="tr-watch-now">Hozir tekshirish</button>
-        <button class="sm secondary" id="tr-binance-test">Binance ulanishini tekshirish</button>
-      </div>
-      <p class="muted" id="tr-binance-result" style="margin-top:.5rem"></p>
-      <p class="muted" id="tr-watch-info"></p>
-      <p class="muted" style="margin-top:.75rem"><b>Kirish</b> — kuniga 2 marta bo'ladigan
-        bosh tahlildan keyin, hakam <b>Sotib ol</b> desa. Shartlar: stop va maqsad berilgan,
-        xatar yuqori emas, ishonch darajasi yetarli, koin sovish muddatida emas, limitlar
-        to'lmagan.<br>
-        <b>Chiqish</b> — kuzatuvchi har necha daqiqada narxni tekshiradi: stopga tushsa yoki
-        1-maqsadga yetsa, pozitsiyani to'liq yopadi. Hakam <b>Sot</b> desa ham yopiladi.
-        Haqiqiy rejim uchun Railway'da BINANCE_API_KEY va BINANCE_SECRET kerak —
-        kalitda <b>faqat spot savdo ruxsati</b> bo'lsin, pul chiqarish o'chiq!</p>
-      <div id="tr-log" class="last-decision" style="display:none"></div>
-    </div>
-
-    <div class="section" style="border:2px dashed #a78bfa">
-      <div class="row" style="justify-content:space-between;margin-bottom:.75rem">
-        <h3 class="sub" style="margin:0">Tezkor savdo <span class="badge badge-purple">mustaqil</span></h3>
-        <button class="fbtn" id="tf-toggle">Yuklanmoqda…</button>
-      </div>
-      <details class="acard-plain">
-        <summary>Sozlamalar va tafsilotlar</summary>
-        <div style="padding-top:.9rem">
-          <p class="muted" style="margin-bottom:.9rem">Yoqilsa — <b>bosh tahlildan uziladi</b>:
-            endi kunlik 2 martalik tahlil savdo qilmaydi, buning o'rniga shu tizim kun davomida
-            o'z holicha, qisqa muddatli (1-4 soatlik) ma'lumot asosida ishlaydi. O'chirilsa —
-            avtomatik ravishda bosh tahlilga qaytadi. Ikkalasi bir vaqtda savdo qilmaydi.</p>
-          <p class="muted" id="tf-status" style="margin-bottom:.75rem"></p>
-          <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-bottom:0">
-            <div class="form-group"><label>Tekshirish oralig'i (daqiqa)</label>
-              <input id="tf-interval" type="number" step="1"></div>
-            <div class="form-group"><label>Bir savdoga maksimal summa ($)</label>
-              <input id="tf-max-usd" type="number" step="any"></div>
-            <div class="form-group"><label>Kunlik maksimal savdolar</label>
-              <input id="tf-max-daily" type="number" step="1"></div>
-            <div class="form-group"><label>Eng kam ishonch darajasi (%)</label>
-              <input id="tf-min-conf" type="number" step="1"></div>
-            <div class="form-group"><label>Bir vaqtda ochiq pozitsiya</label>
-              <input id="tf-max-open" type="number" step="1"></div>
-            <div class="form-group"><label>Sovish muddati (soat)</label>
-              <input id="tf-cooldown" type="number" step="any"></div>
-            <div class="form-group"><label>Kunlik stop chegarasi</label>
-              <input id="tf-max-stops" type="number" step="1"></div>
+    <div class="page" id="trader">
+      <div class="section-title">AI Trader Boshqaruvi</div>
+      <div class="bento-grid">
+        <div class="bento-card span-2">
+          <h3>Asosiy Holat</h3>
+          <div class="form-row" style="margin-top:1rem">
+            <button class="btn btn-secondary" id="tr-toggle" style="flex:1">Yuklanmoqda...</button>
+            <button class="btn btn-secondary" id="tr-mode-paper" style="flex:1">🟡 Sinov</button>
+            <button class="btn btn-secondary" id="tr-mode-real" style="flex:1">🟢 Haqiqiy</button>
           </div>
-          <div class="row">
-            <button class="sm" id="tf-save">Saqlash</button>
-            <button class="sm secondary" id="tf-now">Hozir ishga tushirish</button>
+        </div>
+        <div class="bento-card span-2">
+          <h3>Tezkor Savdo (Mustaqil)</h3>
+          <div class="form-row" style="margin-top:1rem">
+            <button class="btn btn-secondary" id="tf-toggle" style="flex:1">Holat: Yuklanmoqda</button>
+            <button class="btn btn-primary btn-sm" id="tf-now">Hozir ishga tushirish</button>
           </div>
-          <p class="muted" style="margin-top:.75rem">Faqat "Avto: yoniq" belgilangan koinlarni
-            tekshiradi. Har tekshiruvda joy bo'lgan koinlarga qisqa AI tahlil qilinadi — joy
-            bo'lmasa AI'ga umuman murojaat qilinmaydi.</p>
-          <p class="muted" id="tf-log" style="margin-top:.5rem"></p>
-          <details class="acard-plain" style="margin-top:1rem">
-            <summary>So'nggi tezkor tahlillar</summary>
-            <div id="tf-analyses" style="padding-top:.75rem"></div>
+          <p class="muted" id="tf-status" style="margin-top:0.5rem"></p>
+          <details style="margin-top:0.75rem">
+            <summary class="summary-btn">Tezkor savdo sozlamalari</summary>
+            <div class="form-row" style="margin-top:0.75rem;flex-wrap:wrap">
+              <div class="form-group"><label>Oraliq (daqiqa)</label><input id="tf-interval" type="number"></div>
+              <div class="form-group"><label>Maksimal summa ($)</label><input id="tf-max-usd" type="number"></div>
+              <div class="form-group"><label>Kunlik limit (ta)</label><input id="tf-max-daily" type="number"></div>
+              <div class="form-group"><label>Min. Ishonch (%)</label><input id="tf-min-conf" type="number"></div>
+              <div class="form-group"><label>Ochiq pozitsiya</label><input id="tf-max-open" type="number"></div>
+              <div class="form-group"><label>Sovish (soat)</label><input id="tf-cooldown" type="number" step="any"></div>
+              <div class="form-group"><label>Kunlik stop chegarasi</label><input id="tf-max-stops" type="number"></div>
+            </div>
+            <button class="btn btn-primary btn-sm" id="tf-save" style="margin-top:0.5rem">Saqlash</button>
           </details>
         </div>
-      </details>
-    </div>
-
-    <div class="section">
-      <div class="tabs">
-        <div class="tab active" data-ttab="open">Ochiq AI savdolar</div>
-        <div class="tab" data-ttab="closed">Yopilganlar</div>
       </div>
-      <div id="ttab-open"><div id="tr-open"></div></div>
-      <div id="ttab-closed" style="display:none"><div id="tr-closed"></div></div>
-    </div>
-  </div>
+      
+      <div class="bento-card span-4" style="margin-top:1rem">
+        <h3 style="margin-bottom:1rem">Xavfsizlik Cheklovlari</h3>
+        <div class="form-row" style="flex-wrap:wrap">
+          <div class="form-group"><label>Maksimal summa ($)</label><input id="tr-max-usd" type="number"></div>
+          <div class="form-group"><label>Kunlik limit (ta)</label><input id="tr-max-daily" type="number"></div>
+          <div class="form-group"><label>Min. Ishonch (%)</label><input id="tr-min-conf" type="number"></div>
+          <div class="form-group"><label>Ochiq pozitsiya</label><input id="tr-max-open" type="number"></div>
+          <div class="form-group"><label>Sovish muddati (soat)</label><input id="tr-cooldown" type="number"></div>
+          <div class="form-group"><label>Kunlik stop chegarasi</label><input id="tr-max-stops" type="number"></div>
+          <div class="form-group"><label>Kuzatuv oralig'i (daqiqa)</label><input id="tr-watch-min" type="number"></div>
+        </div>
+        <div class="form-row">
+          <button class="btn btn-primary" id="tr-save">Cheklovlarni Saqlash</button>
+          <button class="btn btn-secondary" id="tr-watch-now">Kuzatuvni ishga tushirish</button>
+          <button class="btn btn-secondary" id="tr-binance-test">Binance Ulanishini Tekshirish</button>
+        </div>
+        <p class="muted" id="tr-binance-result" style="margin-top:0.5rem"></p>
+        <p class="muted" id="tr-watch-info"></p>
+        <div id="tr-log" class="bento-card" style="margin-top:1rem;display:none;border-color:var(--primary)"></div>
+      </div>
 
-  <!-- ============ STATISTIKA ============ -->
-  <div class="page" id="stat">
-    <div class="section">
-      <div class="row">
-        <label style="margin:0">Davr</label>
-        <select id="stat-period" style="min-width:140px;max-width:180px">
-          <option value="month">1 oy</option>
+      <div class="section-title" style="margin-top:2rem">Ochiq AI Savdolar</div>
+      <div id="tr-open"></div>
+      <div class="section-title" style="margin-top:2rem">Yopilgan AI Savdolar</div>
+      <div id="tr-closed"></div>
+    </div>
+
+    <div class="page" id="stat">
+      <div class="section-title">
+        <span>Statistika</span>
+        <select id="stat-period" style="width:auto;margin-left:auto;padding:0.4rem 0.8rem">
+          <option value="all">Barcha vaqt</option>
+          <option value="month">30 kun</option>
           <option value="year">1 yil</option>
-          <option value="all" selected>Hammasi</option>
         </select>
       </div>
-    </div>
-
-    <div class="section">
-      <h2>Tahlillar samarasi</h2>
-      <div class="grid2">
-        <div>
-          <p>Jami tahlillar: <b id="s-total">0</b></p>
-          <p class="muted" id="s-detail"></p>
-          <canvas id="ch-applied"></canvas>
+      <div class="bento-grid">
+        <div class="bento-card"><h3>Jami</h3><div class="value num" id="s-total">0</div></div>
+        <div class="bento-card"><h3>Muvaffaqiyat</h3><div class="value num positive" id="s-win">0%</div></div>
+      </div>
+      <div class="bento-grid">
+        <div class="bento-card span-2"><div class="chart-box"><canvas id="ch-outcome"></canvas></div></div>
+        <div class="bento-card span-2"><div class="chart-box"><canvas id="ch-ai"></canvas></div></div>
+      </div>
+      <div class="bento-card span-4" style="margin-top:1rem">
+        <h3>Oylar bo'yicha aniqlik</h3>
+        <div class="chart-box" style="height:240px;margin-top:0.5rem"><canvas id="ch-monthly-a"></canvas></div>
+      </div>
+      <div class="bento-card span-4" style="margin-top:1rem">
+        <h3>Amalga oshirish holati</h3>
+        <p class="muted" id="s-detail" style="margin-top:0.5rem"></p>
+        <div class="chart-box" style="height:220px;margin-top:0.5rem"><canvas id="ch-applied"></canvas></div>
+      </div>
+      <div class="bento-card span-4" style="margin-top:1rem">
+        <h3>Jurnal Natijalari</h3>
+        <div id="j-box" style="margin-top:1rem"></div>
+        <div class="chart-box" style="height:220px;margin-top:1rem"><canvas id="ch-j-equity"></canvas></div>
+      </div>
+      <div class="bento-card span-4" style="margin-top:1rem">
+        <h3>AI Trader Natijalari</h3>
+        <div class="form-row" style="margin-top:1rem">
+          <button class="btn btn-sm btn-secondary" data-sess="all">Barchasi</button>
+          <button class="btn btn-sm btn-secondary" data-sess="swing">Bosh (Swing)</button>
+          <button class="btn btn-sm btn-secondary" data-sess="fast">Tezkor (Fast)</button>
         </div>
-        <div>
-          <p><b>Amalga oshirilganlar natijasi</b></p>
-          <canvas id="ch-outcome"></canvas>
+        <div id="trader-stats" style="margin-top:1rem"></div>
+        <div class="chart-box" style="height:220px;margin-top:1rem"><canvas id="ch-tr-equity"></canvas></div>
+      </div>
+      <div class="bento-card span-4" style="margin-top:1rem">
+        <h3>Tezkor Treyder Statistikasi</h3>
+        <p class="muted" id="tf-summary" style="margin-top:0.5rem"></p>
+        <div class="chart-box" style="margin-top:1rem"><canvas id="ch-fast-ai"></canvas></div>
+      </div>
+    </div>
+
+    <div class="page" id="sozlama">
+      <div class="section-title">Tizim Sozlamalari</div>
+      <div class="bento-grid">
+        <div class="bento-card span-2">
+          <h3>AI Modellar</h3>
+          <div id="ai-list" style="margin-top:1rem"></div>
+          <button class="btn btn-secondary btn-sm" id="btn-ai-test" style="margin-top:1rem">Modellarni Tekshirish</button>
+          <div id="ai-test-result" style="margin-top:1rem"></div>
+        </div>
+        <div class="bento-card span-2">
+          <h3>Jadval va Profil</h3>
+          <div class="form-row" style="margin-top:1rem;align-items:center">
+            <button class="btn btn-sm btn-secondary" id="auto-toggle" style="flex:1">Yuklanmoqda…</button>
+            <span id="auto-next" style="flex:2"></span>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Ertalab</label><input id="set-morning" type="time"></div>
+            <div class="form-group"><label>Kechqurun</label><input id="set-evening" type="time"></div>
+            <div class="form-group"><label>Komissiya (% bir tomon)</label><input id="set-fee" type="number" step="0.001"></div>
+          </div>
+          <div class="form-group"><label>Treyder Profili</label><textarea id="set-profile" rows="3"></textarea></div>
+          <button class="btn btn-primary" id="btn-save-time" style="margin-top:0.5rem">Saqlash</button>
+        </div>
+        <div class="bento-card span-4">
+          <h3>Koinlar Ro'yxati</h3>
+          <div class="form-row" style="margin-top:1rem">
+            <input id="new-coin" placeholder="Masalan: BTC" style="flex:2">
+            <button class="btn btn-primary" id="btn-add-coin">Qo'shish</button>
+          </div>
+          <div id="coin-list-starred" style="margin-top:1rem"></div>
+          <details id="coin-others-wrap" style="margin-top:0.75rem">
+            <summary class="btn btn-sm btn-secondary" style="cursor:pointer;display:inline-flex">Boshqa koinlar <svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-left:0.4rem"><polyline points="6 9 12 15 18 9"/></svg></summary>
+            <div id="coin-list-others" style="margin-top:0.75rem"></div>
+          </details>
+        </div>
+        <div class="bento-card span-4">
+          <h3>Telegram Bildirishnomalar</h3>
+          <div class="form-row" style="margin-top:1rem">
+            <button class="btn btn-secondary" id="tg-toggle">Telegram: Yuklanmoqda</button>
+            <button class="btn btn-secondary btn-sm" id="tg-test">Tekshirish</button>
+          </div>
+          <p class="muted" id="tg-result" style="margin-top:0.5rem"></p>
         </div>
       </div>
-      <h3 class="sub">Qaysi AI aniqroq (sizning belgilaringiz asosida)</h3>
-      <canvas id="ch-ai"></canvas>
-      <h3 class="sub">Oyma-oy</h3>
-      <canvas id="ch-monthly-a"></canvas>
     </div>
 
-    <div class="section">
-      <h2>Jurnal statistikasi <span class="badge badge-gray">realizatsiya qilingan</span></h2>
-      <p class="muted" style="margin-bottom:.75rem">Faqat sotilgan qismlar hisoblanadi — hali
-        qo'lda turgan koinlarning qog'ozdagi (noreal) foyda/zarari Jurnal sahifasida ko'rinadi.</p>
-      <div id="j-box"></div>
-      <h3 class="sub">Oyma-oy (sof natija)</h3>
-      <canvas id="ch-j-monthly"></canvas>
-      <h3 class="sub">Balans o'sishi (jamlangan $)</h3>
-      <canvas id="ch-j-equity"></canvas>
-    </div>
-
-    <div class="section" style="border:2px dashed #a78bfa">
-      <h2>AI Trader statistikasi <span class="badge badge-purple">alohida</span></h2>
-      <div class="tabs" style="margin-bottom:1rem">
-        <div class="tab active" data-sess="all">Hammasi</div>
-        <div class="tab" data-sess="swing">Bosh tahlil</div>
-        <div class="tab" data-sess="fast">Tezkor</div>
-      </div>
-      <div class="grid2">
-        <div>
-          <p><b>🟡 Sinov rejimi</b></p>
-          <p class="muted" id="ts-paper"></p>
-        </div>
-        <div>
-          <p><b>🟢 Haqiqiy rejim</b></p>
-          <p class="muted" id="ts-real"></p>
-        </div>
-      </div>
-      <p class="muted" style="margin-top:.5rem"><b>Koeffitsient</b> — jami foyda / jami zarar.
-        1 dan past bo'lsa tizim zarar keltiryapti, 1.5 dan yuqori — yaxshi ishlayapti.
-        <b>G'alaba foizi</b> aldashi mumkin: yarmi to'g'ri chiqib ham zararda bo'lish mumkin,
-        shuning uchun asosiy raqam — sof natija.</p>
-      <h3 class="sub">AI balans o'sishi (sinov / haqiqiy)</h3>
-      <canvas id="ch-tr-equity"></canvas>
-    </div>
-
-    <div class="section" style="border:2px dashed #a78bfa">
-      <h2>Tezkor AI tahlil natijasi <span class="badge badge-purple">alohida</span></h2>
-      <p class="muted" id="tf-summary" style="margin-bottom:.75rem"></p>
-      <h3 class="sub" style="margin-top:0">Qaysi AI aniqroq — tezkor tahlillarda</h3>
-      <canvas id="ch-fast-ai"></canvas>
-      <p class="muted" style="margin-top:.5rem">AI Trader sahifasidagi tahlil kartalarida
-        har bir tahlilchi ostida ✓/✗ tugmasi bor — savdo natijasi ma'lum bo'lgach shu yerda
-        belgilab qo'ysangiz, yashil/qizil ustunlar shunga qarab shakllanadi.</p>
-    </div>
-  </div>
-
-  <!-- ============ SOZLAMALAR ============ -->
-  <div class="page" id="sozlama">
-    <div class="section">
-      <h2>Kuzatuv ro'yxati</h2>
-      <div id="coin-list-starred"></div>
-      <details class="acard-plain" id="coin-others-wrap" style="margin-top:.75rem">
-        <summary>Boshqa koinlar</summary>
-        <div id="coin-list-others" style="padding-top:.5rem"></div>
-      </details>
-      <div class="row" style="margin-top:1rem">
-        <input id="new-coin" placeholder="Masalan: SOL" style="max-width:200px">
-        <button id="btn-add-coin">Qo'shish</button>
-      </div>
-    </div>
-
-    <div class="section">
-      <h2>AI tahlilchilar</h2>
-      <div id="ai-list"></div>
-      <p class="muted" style="margin:.5rem 0 1rem">Hakam — doim Claude (ishlamasa, ro'yxatdagi birinchi faol AI).
-        Yoqilgan AI'ning Railway'da kaliti bo'lishi kerak.</p>
-      <button class="sm secondary" id="btn-ai-test">AI'larni tekshirish</button>
-      <div id="ai-test-result" style="margin-top:.75rem"></div>
-    </div>
-
-    <div class="section">
-      <h2>Avtomatik tahlil</h2>
-      <div class="section global-warn negative" style="display:none;font-weight:600;margin-bottom:1rem">
-        ⏸ Umumiy kalit o'chiq — bu sozlamalar hozircha ta'sir qilmaydi.
-      </div>
-      <div class="row" style="margin-bottom:.75rem">
-        <button class="fbtn" id="auto-toggle">Yuklanmoqda…</button>
-        <span id="auto-next"></span>
-      </div>
-      <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:1rem;margin-bottom:0">
-        <div class="form-group"><label>Ertalabki vaqt</label><input id="set-morning" type="time"></div>
-        <div class="form-group"><label>Kechki vaqt</label><input id="set-evening" type="time"></div>
-      </div>
-      <button class="sm" id="btn-save-time">Vaqtlarni saqlash</button>
-      <p class="muted" style="margin-top:.75rem">Faqat "Avto: yoniq" belgilangan koinlar tahlil qilinadi.
-        O'chirilgan holatda qo'lda tahlil qilish baribir ishlayveradi.</p>
-    </div>
-
-    <div class="section">
-      <h2>Boshqa sozlamalar</h2>
-      <div class="form-group" style="max-width:220px">
-        <label>Komissiya (% bir tomon)</label><input id="set-fee" type="number" step="0.001">
-      </div>
-      <div class="form-group">
-        <label>Treyder profili — AI'larga "men kimman va menga qanday tahlil kerak"
-          deb tushuntiradigan matn. Uslubingizni o'zgartirsangiz, shu yerni yangilang.</label>
-        <textarea id="set-profile"></textarea>
-      </div>
-      <button id="btn-save-set">Saqlash</button>
-    </div>
-
-    <div class="section">
-      <h2>Telegram bildirishnomalari</h2>
-      <div class="row" style="margin-bottom:.75rem">
-        <button class="fbtn" id="tg-toggle">Yuklanmoqda…</button>
-        <button class="fbtn mini" id="tg-fast-toggle">Tezkor savdo signallari</button>
-      </div>
-      <div class="row">
-        <button class="sm secondary" id="tg-test">Sinab ko'rish</button>
-      </div>
-      <p class="muted" id="tg-result" style="margin-top:.5rem"></p>
-      <p class="muted" id="tg-users" style="margin-top:.35rem"></p>
-      <p class="muted" style="margin-top:.75rem">Yoqilsa — hakam <b>Sotib ol</b> desa,
-        koin, narx, stop/maqsad va qisqa izoh bilan Telegram'ga xabar keladi. "Tezkor
-        savdo signallari" alohida — o'chiq bo'lsa faqat bosh tahlil (kuniga 2 marta)
-        xabar beradi, tezkor tsikl (har 20 daqiqa) jim ishlayveradi.<br><br>
-        <b>Sozlash:</b> @BotFather orqali bot yarating, Railway'da faqat
-        <b>TELEGRAM_BOT_TOKEN</b> o'zgaruvchisini qo'shing (chat ID kerak emas).
-        Keyin botni Telegram'da toping va unga <b>/start</b> bosing — kim start bersa,
-        o'sha ro'yxatga qo'shiladi va signalni oladi. Bir nechta odam bitta botga
-        start bersa — hammasiga birdan yuboriladi.</p>
-    </div>
-  </div>
-
+  </main>
 </div>
+
+<nav class="bottom-nav">
+  <a class="b-nav-item active" data-page="tahlil">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+    Tahlil
+  </a>
+  <a class="b-nav-item" data-page="bozor">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    Bozor
+  </a>
+  <a class="b-nav-item" data-page="uzoq">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    Uzoq
+  </a>
+  <a class="b-nav-item" data-page="jurnal">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+    Jurnal
+  </a>
+  <a class="b-nav-item" data-page="trader">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+    Trader
+  </a>
+  <a class="b-nav-item" data-page="sozlama">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    Sozlamalar
+  </a>
+</nav>
+
 <div id="toast"></div>
 
 <script>
-const $=s=>document.querySelector(s);
-const api=async(url,opt)=>{const r=await fetch(url,opt);if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.detail||'Xatolik');}return r.json();};
-const post=(url,body)=>api(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-const toast=m=>{const t=$('#toast');t.textContent=m;t.style.display='block';setTimeout(()=>t.style.display='none',3000);};
-const fdate=s=>new Date(s).toLocaleString('uz-UZ',{dateStyle:'short',timeStyle:'short'});
-// Minglik ajratkichi — bo'shliq bilan: 12345.6 -> "12 345.6"
-const grp=s=>{s=String(s);let neg=s.startsWith('-');if(neg)s=s.slice(1);
-  let[i,d]=s.split('.');i=i.replace(/\B(?=(\d{3})+(?!\d))/g,' ');
-  return(neg?'-':'')+i+(d!==undefined?'.'+d:'');};
-const money=v=>(v<0?'-':'+')+'$'+grp(Math.abs(v).toFixed(2));
-const usd=v=>'$'+grp((+v).toFixed(2));
-const esc=s=>(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;');
-// Oddiy markdown -> HTML: **qalin**, *kursiv*, ### sarlavha, - ro'yxat
-const md=s=>{
-  let t=esc(s||'');
-  t=t.replace(/^#{1,6}\s*(.+)$/gm,'<b>$1</b>');
-  t=t.replace(/\*\*(.+?)\*\*/g,'<b>$1</b>');
-  t=t.replace(/(^|[^*])\*([^*\n]+?)\*(?!\*)/g,'$1<i>$2</i>');
-  t=t.replace(/^\s*[-•]\s+/gm,'· ');
-  t=t.replace(/`([^`]+)`/g,'$1');
-  // Urg'u belgilari: [+]ijobiy[/+] [-]xavf[/-] [~]kutish[/~] [!]amaliy qadam[/!]
-  t=t.replace(/\[\+\]([\s\S]*?)\[\/\+\]/g,'<span class="hl-up">$1</span>');
-  t=t.replace(/\[-\]([\s\S]*?)\[\/-\]/g,'<span class="hl-down">$1</span>');
-  t=t.replace(/\[~\]([\s\S]*?)\[\/~\]/g,'<span class="hl-wait">$1</span>');
-  t=t.replace(/\[!\]([\s\S]*?)\[\/!\]/g,'<span class="hl-act">$1</span>');
-  // Belgilanmagan qolgan juftliklarni tozalaymiz
-  t=t.replace(/\[\/?[-+~!]\]/g,'');
-  return t;
+if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+const $ = s => document.querySelector(s);
+const api = async (url, opts = {}) => {
+  const res = await fetch(url, opts);
+  if (!res.ok) { const err = await res.json().catch(() => ({})); throw new Error(err.detail || `HTTP ${res.status}`); }
+  return res.json();
 };
-const fmtP=v=>v>=1000?grp(v.toFixed(0)):v>=1?v.toFixed(2):(+v).toFixed(6);
-// Ixcham narx: 0.721400 -> 0.7214, 43250.1 -> 43 250
-const fmtS=v=>{v=+v;if(!isFinite(v))return '';
-  if(v>=1000)return grp(v.toFixed(0));
-  if(v>=1)return v.toFixed(2);
-  if(v>=0.01)return String(+v.toFixed(4));
-  return String(+v.toPrecision(4));};
-const AI_NAMES={qwen:'Qwen',deepseek:'DeepSeek',gpt:'GPT',gemini:'Gemini',claude:'Claude'};
+const post = async (url, data) => api(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+const esc = s => String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const fmtS = n => Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const fmtP = n => { n = +n; return n >= 1000 ? Math.round(n).toLocaleString('en-US') : n >= 1 ? n.toFixed(2) : n.toFixed(6); };
+const money = n => (n >= 0 ? '+' : '') + '$' + fmtS(n);
+const toast = msg => {
+  const t = $('#toast'); t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+};
+const AI_NAMES = { qwen: 'Qwen', deepseek: 'DeepSeek', gpt: 'GPT', gemini: 'Gemini', claude: 'Claude' };
 
-// ---- Sahifa navigatsiyasi ----
-function goToPage(page, skipSave){
-  const a=document.querySelector(`.nav a[data-page="${page}"]`);
-  if(!a)return;
-  document.querySelectorAll('.nav a').forEach(x=>x.classList.remove('active'));
-  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
-  a.classList.add('active');$('#'+page).classList.add('active');
-  if(!skipSave)localStorage.setItem('lastPage',page);
-  if(page==='stat')loadStats();
-  if(page==='bozor'){loadMarket();loadSentiment();}
-  if(page==='trader'){loadTrader();loadTraderTrades();
-    renderAnalyses('fast','#tf-analyses','Hali tezkor tahlil yo\'q.');}
-  if(page==='jurnal')loadJournal();
-  paintFirstCard();
-}
-document.querySelectorAll('.nav a').forEach(a=>a.onclick=()=>goToPage(a.dataset.page));
-document.querySelectorAll('.tab[data-jtab]').forEach(t=>t.onclick=()=>{
-  document.querySelectorAll('.tab[data-jtab]').forEach(x=>x.classList.remove('active'));
-  t.classList.add('active');
-  $('#jtab-open').style.display=t.dataset.jtab==='open'?'':'none';
-  $('#jtab-closed').style.display=t.dataset.jtab==='closed'?'':'none';
-});
-document.querySelectorAll('.tab[data-ttab]').forEach(t=>t.onclick=()=>{
-  document.querySelectorAll('.tab[data-ttab]').forEach(x=>x.classList.remove('active'));
-  t.classList.add('active');
-  $('#ttab-open').style.display=t.dataset.ttab==='open'?'':'none';
-  $('#ttab-closed').style.display=t.dataset.ttab==='closed'?'':'none';
-});
-
-// ---- Umumiy ko'rsatkichlar ----
-let sumCache={analyses:0,journal:null};
-async function loadSummary(){
-  try{
-    const [a,t,js]=await Promise.all([
-      api('/api/stats/analyses?period=all'),api('/api/journal/stats?period=all'),
-      api('/api/journal/summary')]);
-    sumCache={analyses:a.total,journal:js};
-    const net=$('#sum-net');net.textContent=money(t.total_net_usd);
-    net.className='value '+(t.total_net_usd>=0?'positive':'negative');
-    $('#sum-net-pct').textContent=(t.total_net_pct>=0?'+':'')+t.total_net_pct+'%';
-    // Ochiq savdo — faqat qiymati $1 dan yuqori bo'lgan pozitsiyalar
-    $('#sum-open').textContent=js.open_count;
-    paintFirstCard();
-  }catch(e){}
-}
-// Jurnal sahifasida "Jami tahlillar" o'rniga savdolar soni turadi
-function paintFirstCard(){
-  const onJournal=$('#jurnal')&&$('#jurnal').classList.contains('active');
-  const js=sumCache.journal;
-  if(onJournal&&js){
-    $('#sum-first-title').textContent='Jami savdolar';
-    $('#sum-analyses').textContent=js.coin_count;
-    $('#sum-first-sub').textContent=`${js.open_count} ochiq · ${js.closed_count} yopilgan · ${js.entry_count} operatsiya`;
-  }else{
-    $('#sum-first-title').textContent='Jami tahlillar';
-    $('#sum-analyses').textContent=sumCache.analyses;
-    $('#sum-first-sub').textContent='';
+function goToPage(pageId) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item, .b-nav-item').forEach(a => a.classList.remove('active'));
+  
+  const target = $('#' + pageId);
+  if (target) {
+    target.classList.add('active');
+    document.querySelectorAll(`[data-page="${pageId}"]`).forEach(a => a.classList.add('active'));
+    localStorage.setItem('lastPage', pageId);
+    window.scrollTo(0, 0);
+    
+    if (pageId === 'stat') loadStats();
+    if (pageId === 'trader') loadTrader();
+    if (pageId === 'jurnal') { loadJournal(); loadSummary(); }
+    if (pageId === 'tahlil') loadAnalyses();
+    if (pageId === 'uzoq') loadAnalyses('long', '#long-list', 'Hali uzoq muddatli tahlil yo\'q.');
+    if (pageId === 'nima') loadAnalyses('news', '#nima-list', 'Hali tezkor tahlil yo\'q.');
+    if (pageId === 'bozor') loadMarket();
   }
 }
 
-// ---- Hakam xulosasi kartasi ----
-function verdictCard(a){
-  let v=null;
-  try{const p=JSON.parse(a.summary);if(p&&p.action)v=p;}catch(e){}
-  if(!v)return `<div style="white-space:pre-wrap;margin:.75rem 0">${md(a.summary)}</div>`;
-  const map={BUY:['SOTIB OL','vb-buy'],SELL:['SOT','vb-sell'],WAIT:['KUTISH','vb-wait']};
-  const [label,cls]=map[v.action];
-  const conf=Math.max(0,Math.min(100,+v.confidence||0));
-  const riskColor={past:'#10b981',"o'rta":'#f59e0b',yuqori:'#ef4444'}[v.risk]||'#666';
-  let levels='';
-  const base=(v.entry_low&&v.entry_high)?((+v.entry_low)+(+v.entry_high))/2
-             :(+v.entry_low||+v.entry_high||+a.price||null);
-  const pct=x=>base?` <span style="font-size:.8rem">(${x>=base?'+':''}${((x-base)/base*100).toFixed(1)}%)</span>`:'';
-  if(v.entry_low||v.entry_high)levels+=`<div class="lvl entry">Kirish zonasi<b>$${fmtS(v.entry_low||v.entry_high)}${v.entry_high&&v.entry_low?' – $'+fmtS(v.entry_high):''}</b></div>`;
-  if(v.stop)levels+=`<div class="lvl stop">Himoya (stop)<b style="color:#dc2626">$${fmtS(v.stop)}${pct(+v.stop)}</b></div>`;
-  (v.targets||[]).forEach((t,i)=>levels+=`<div class="lvl tgt">Maqsad ${i+1}<b style="color:#2563eb">$${fmtS(t)}${pct(+t)}</b></div>`);
-  return `
-    <div class="verdict-banner ${cls}">
-      <span class="act">${label}</span>
-      <span style="font-weight:600">Xatar: <span style="background:var(--card);color:${riskColor};padding:.15rem .6rem;border-radius:12px">${esc(v.risk||'-')}</span></span>
-    </div>
-    <div class="conf-wrap"><span class="muted">Ishonch darajasi: <b>${conf}%</b></span>
-      <div class="conf-bar"><div class="conf-fill" style="width:${conf}%"></div></div></div>
-    ${levels?`<div class="levels">${levels}</div>`:''}
-    ${priceScale(v,a.price)}
-    <p style="margin:.75rem 0">${md(v.comment||'')}</p>
-    ${v.disagreement?`<p class="muted">⚖️ ${md(v.disagreement)}</p>`:''}
-    ${v.judge_note?`<p class="muted">${esc(v.judge_note)}</p>`:''}`;
-}
+document.querySelectorAll('[data-page]').forEach(a => {
+  a.onclick = (e) => { e.preventDefault(); goToPage(a.dataset.page); };
+});
 
-// ---- Narx shkalasi (vertikal) ----
-function priceScale(v,cur){
-  const el=+v.entry_low||0, eh=+v.entry_high||0;
-  const zLo=Math.min(el||eh,eh||el), zHi=Math.max(el||eh,eh||el);
-  const rows=[];
-  const add=(p,type,name,text)=>{p=+p;if(isFinite(p)&&p>0)rows.push({p,type,name,text});};
-  (v.targets||[]).forEach((t,i)=>add(t,'tgt','Maqsad '+(i+1)));
-  add(cur,'cur','Hozir');
-  add(v.stop,'stop','Himoya');
-  if(zLo)add((zLo+zHi)/2,'entry','Kirish zonasi',
-    zLo===zHi?'$'+fmtS(zLo):'$'+fmtS(zLo)+' – $'+fmtS(zHi));
-  if(rows.length<2)return '';
-  const all=rows.map(r=>r.p);if(zLo)all.push(zLo,zHi);
-  const min=Math.min(...all),max=Math.max(...all);
-  if(!(max>min))return '';
-  const pad=(max-min)*0.05, lo=min-pad, hi=max+pad;
-  rows.sort((a,b)=>b.p-a.p);                 // yuqori narx — tepada
-  const n=rows.length;
-  const MIN=48,TOP=24,BOT=24,MIX=0.35;       // MIN — ikki daraja orasidagi eng kichik masofa
-  const inner=Math.max(180,(n-1)*MIN);
-  const Yp=p=>TOP+(1-(p-lo)/(hi-lo))*inner;  // narxga mutanosib joy
-  rows.forEach((r,i)=>{
-    const even=TOP+(n>1?i*(inner/(n-1)):inner/2);   // teng taqsimlangan joy
-    r.y=MIX*Yp(r.p)+(1-MIX)*even;                   // ikkovining aralashmasi
+const fdate = s => new Date(s).toLocaleString('uz-UZ', { dateStyle: 'short', timeStyle: 'short' });
+
+function priceScale(v, cur) {
+  const el = +v.entry_low || 0, eh = +v.entry_high || 0;
+  const zLo = Math.min(el || eh, eh || el), zHi = Math.max(el || eh, eh || el);
+  const rows = [];
+  const add = (p, type, name, text) => { p = +p; if (isFinite(p) && p > 0) rows.push({ p, type, name, text }); };
+  (v.targets || []).forEach((t, i) => add(t, 'tgt', 'Maqsad ' + (i + 1)));
+  add(cur, 'cur', 'Hozir');
+  add(v.stop, 'stop', 'Himoya');
+  if (zLo) add((zLo + zHi) / 2, 'entry', 'Kirish zonasi', zLo === zHi ? '$' + fmtS(zLo) : '$' + fmtS(zLo) + ' – $' + fmtS(zHi));
+  if (rows.length < 2) return '';
+  const all = rows.map(r => r.p); if (zLo) all.push(zLo, zHi);
+  const min = Math.min(...all), max = Math.max(...all);
+  if (!(max > min)) return '';
+  const pad = (max - min) * 0.05, lo = min - pad, hi = max + pad;
+  rows.sort((a, b) => b.p - a.p);
+  const n = rows.length;
+  const MIN = 48, TOP = 24, BOT = 24, MIX = 0.35;
+  const inner = Math.max(180, (n - 1) * MIN);
+  const Yp = p => TOP + (1 - (p - lo) / (hi - lo)) * inner;
+  rows.forEach((r, i) => {
+    const even = TOP + (n > 1 ? i * (inner / (n - 1)) : inner / 2);
+    r.y = MIX * Yp(r.p) + (1 - MIX) * even;
   });
-  for(let i=1;i<n;i++)                       // kafolatlangan bo'shliq
-    if(rows[i].y<rows[i-1].y+MIN)rows[i].y=rows[i-1].y+MIN;
-  const H=Math.round(rows[n-1].y+BOT);
-  let zh=0,zt=0;
-  if(zLo){const er=rows.find(r=>r.type==='entry');
-    zh=Math.max(22,Math.min(MIN-8,Math.abs(Yp(zHi)-Yp(zLo))));zt=er.y-zh/2;}
-  const base=zLo?(zLo+zHi)/2:(+cur||0);
-  const pct=p=>{if(!base||Math.abs(p-base)/base<0.0005)return '';
-    const d=(p-base)/base*100;
-    return `<i class="pp ${d>=0?'up':'dn'}">${d>=0?'+':''}${d.toFixed(1)}%</i>`;};
-  let h=`<div class="pscale" style="height:${H}px">`+
-    `<div class="rail" style="top:${TOP-10}px;bottom:${BOT-10}px"></div>`;
-  if(zLo)h+=`<div class="zone" style="top:${zt.toFixed(1)}px;height:${zh.toFixed(1)}px"></div>`;
-  rows.forEach(r=>{
-    if(r.type!=='entry')h+=`<span class="tick ${r.type}" style="top:${r.y.toFixed(1)}px"></span>`;
-    h+=`<div class="plabel ${r.type}" style="top:${r.y.toFixed(1)}px">`+
-      `<b>${r.text||'$'+fmtS(r.p)}</b><span class="nm">${r.name}</span>${pct(r.p)}</div>`;});
-  return h+'</div><div class="pscale-note">tartib to\'g\'ri, oradagi masofa shartli</div>';
+  for (let i = 1; i < n; i++) if (rows[i].y < rows[i - 1].y + MIN) rows[i].y = rows[i - 1].y + MIN;
+  const H = Math.round(rows[n - 1].y + BOT);
+  let zh = 0, zt = 0;
+  if (zLo) { const er = rows.find(r => r.type === 'entry'); zh = Math.max(22, Math.min(MIN - 8, Math.abs(Yp(zHi) - Yp(zLo)))); zt = er.y - zh / 2; }
+  const base = zLo ? (zLo + zHi) / 2 : (+cur || 0);
+  const pct = p => { if (!base || Math.abs(p - base) / base < 0.0005) return ''; const d = (p - base) / base * 100; return `<i class="pp ${d >= 0 ? 'up' : 'dn'}">${d >= 0 ? '+' : ''}${d.toFixed(1)}%</i>`; };
+  let h = `<div class="pscale" style="height:${H}px"><div class="rail" style="top:${TOP - 10}px;bottom:${BOT - 10}px"></div>`;
+  if (zLo) h += `<div class="zone" style="top:${zt.toFixed(1)}px;height:${zh.toFixed(1)}px"></div>`;
+  rows.forEach(r => {
+    if (r.type !== 'entry') h += `<span class="tick ${r.type}" style="top:${r.y.toFixed(1)}px"></span>`;
+    h += `<div class="plabel ${r.type}" style="top:${r.y.toFixed(1)}px"><b>${r.text || '$' + fmtS(r.p)}</b><span class="nm">${r.name}</span>${pct(r.p)}</div>`;
+  });
+  return h + '</div><div class="pscale-note">tartib to\'g\'ri, oradagi masofa shartli</div>';
 }
 
-// ---- AI bloklari ----
-function aiBlocks(a){
-  if(!a.discussion)return '';
-  let v=null;try{const p=JSON.parse(a.summary);if(p&&p.action)v=p;}catch(e){}
-  const ids=[...new Set(Object.keys(a.discussion)
-    .filter(k=>/_1$|_2$/.test(k)).map(k=>k.replace(/_[12]$/,'')))];
-  let h='';
-  for(const id of ids){
-    const name=AI_NAMES[id]||id;
-    const full=[a.discussion[id+'_1'],a.discussion[id+'_2']].filter(Boolean)
-      .map((t,i)=>`<div class="disc"><b>${name} — ${i+1}-aylana</b>\n${md(t)}</div>`).join('');
-    let short=v&&v.analyst_summaries&&v.analyst_summaries[id];
-    if(!short){const t=a.discussion[id+'_1']||'';short=t.slice(0,220)+(t.length>220?'…':'');}
-    const fb=(a.ai_feedback||{})[id];
-    h+=`<div class="ai-block">
-      <div class="ai-head">
-        <span class="badge badge-blue">${name}</span>
-        <div class="row">
-          <button class="fbtn mini ${fb==='good'?'on-green':''}" onclick="aifb(${a.id},'${id}','${fb==='good'?'clear':'good'}')">✓ To'g'ri</button>
-          <button class="fbtn mini ${fb==='bad'?'on-red':''}" onclick="aifb(${a.id},'${id}','${fb==='bad'?'clear':'bad'}')">✗ Noto'g'ri</button>
-        </div>
+function aiBlocks(a, v) {
+  if (!a.discussion) return '';
+  const ids = [...new Set(Object.keys(a.discussion).filter(k => /_1$|_2$/.test(k)).map(k => k.replace(/_[12]$/, '')))];
+  let h = '';
+  for (const id of ids) {
+    const name = AI_NAMES[id] || id;
+    const full = [a.discussion[id + '_1'], a.discussion[id + '_2']].filter(Boolean)
+      .map((t, i) => `<p class="muted" style="margin-bottom:0.5rem"><b>${name} — ${i + 1}-aylana</b><br>${esc(t).replace(/\n/g, '<br>')}</p>`).join('');
+    let short = v && v.analyst_summaries && v.analyst_summaries[id];
+    if (!short) { const t = a.discussion[id + '_1'] || ''; short = t.slice(0, 220) + (t.length > 220 ? '…' : ''); }
+    const fb = (a.ai_feedback || {})[id];
+    h += `<div class="bento-card" style="margin-top:0.75rem;text-align:left">
+      <div class="form-row" style="align-items:center;margin-bottom:0.5rem">
+        <span class="badge badge-info" style="flex:1;text-align:left;justify-content:flex-start">${name}</span>
+        <button class="btn btn-sm ${fb === 'good' ? 'btn-primary' : 'btn-secondary'}" onclick="event.stopPropagation();aifb(${a.id},'${id}','${fb === 'good' ? 'clear' : 'good'}')">✓ To'g'ri</button>
+        <button class="btn btn-sm ${fb === 'bad' ? 'btn-danger' : 'btn-secondary'}" onclick="event.stopPropagation();aifb(${a.id},'${id}','${fb === 'bad' ? 'clear' : 'bad'}')">✗ Noto'g'ri</button>
       </div>
-      <div class="ai-short">${md(short)}</div>
-      <details><summary>To'liq matni</summary>${full}</details>
+      <p style="margin:0;line-height:1.6">${esc(short)}</p>
+      <details onclick="event.stopPropagation()" style="margin-top:0.5rem"><summary class="summary-btn">To'liq matnni ko'rish (inglizcha)</summary><div style="margin-top:0.5rem">${full}</div></details>
     </div>`;
   }
-  const errs=Object.entries(a.discussion).filter(([k])=>k.startsWith('hakam'));
-  if(errs.length)h+=`<details style="margin-top:.6rem"><summary>Hakam xatolari</summary>${
-    errs.map(([k,t])=>`<div class="disc"><b>${k}</b>\n${esc(t)}</div>`).join('')}</details>`;
+  const errs = Object.entries(a.discussion).filter(([k]) => k.startsWith('hakam'));
+  if (errs.length) h += `<details onclick="event.stopPropagation()" style="margin-top:0.75rem"><summary class="summary-btn">Hakam xatolari</summary><div style="margin-top:0.5rem">${errs.map(([k, t]) => `<p class="muted" style="margin-bottom:0.4rem"><b>${esc(k)}</b><br>${esc(t)}</p>`).join('')}</div></details>`;
   return h;
 }
-window.aifb=async(id,ai,verdict)=>{
-  await post(`/api/analyses/${id}/ai_feedback`,{ai,verdict});loadAnalyses();
+window.aifb = async (id, ai, verdict) => {
+  await post(`/api/analyses/${id}/ai_feedback`, { ai, verdict });
+  toast('Saqlandi');
+  loadAnalyses(currentAnalysesKind, currentAnalysesTarget, currentAnalysesEmpty);
 };
 
-// ---- Tahlillar ro'yxati ----
-async function loadAnalyses(){
-  await renderAnalyses('swing','#analyses-list',
-    'Hali tahlillar yo\'q. Sozlamalarda koin qo\'shing va "Hozir tahlil qil" tugmasini bosing.');
-  await renderAnalyses('long','#long-list','Hali uzoq muddatli tahlil yo\'q.');
-  await renderAnalyses('news','#nima-list','Hali tezkor tahlil yo\'q. Yuqoridagi tugmani bosing.');
-  loadSummary();
+function shortReason(v) {
+  const c = v.comment || '';
+  const pick = tag => { const m = c.match(new RegExp('\\[' + tag + '\\]([\\s\\S]*?)\\[/' + tag + '\\]')); return m ? m[1] : null; };
+  let text = v.action === 'WAIT' ? (pick('~') || pick('-'))
+    : v.action === 'SELL' ? (pick('-') || pick('~'))
+    : (pick('+') || pick('~'));
+  if (!text) text = c.replace(/\[\/?[-+~!]\]/g, '').split(/[.!?]\s/)[0];
+  text = (text || '').replace(/\[\/?[-+~!]\]/g, '').trim();
+  return text.length > 100 ? text.slice(0, 100) + '…' : text;
 }
-const openCards=new Set();          // ochiq kartalarni eslab qolamiz
-function shortReason(v){
-  const c=v.comment||'';
-  const pick=tag=>{const m=c.match(new RegExp('\\['+tag+'\\]([\\s\\S]*?)\\['+'/'+tag+'\\]'));return m?m[1]:null;};
-  let text = v.action==='WAIT' ? (pick('~')||pick('-'))
-           : v.action==='SELL' ? (pick('-')||pick('~'))
-           : (pick('+')||pick('~'));
-  if(!text){
-    text=c.replace(/\[\/?[-+~!]\]/g,'').split(/[.!?]\s/)[0];
+
+let currentAnalysesKind = 'swing', currentAnalysesTarget = '#analyses-list', currentAnalysesEmpty = 'Hali tahlil yo\'q.';
+async function loadAnalyses(kind = 'swing', containerId = '#analyses-list', emptyMsg = 'Hali tahlil yo\'q.') {
+  currentAnalysesKind = kind; currentAnalysesTarget = containerId; currentAnalysesEmpty = emptyMsg;
+  const data = await api(`/api/analyses?kind=${kind}`);
+  const el = $(containerId);
+  if (!data.length) {
+    el.innerHTML = `<div class="bento-card" style="text-align:center;padding:3rem"><p class="muted">${emptyMsg}</p></div>`;
+    return;
   }
-  text=text.replace(/\[\/?[-+~!]\]/g,'').trim();
-  return text.length>100?text.slice(0,100)+'…':text;
-}
-function previewOf(kind,a,v){
-  if((kind==='swing'||kind==='fast')&&v){
-    const map={BUY:['SOTIB OL','buy'],SELL:['SOT','sell'],WAIT:['KUTISH','wait']};
-    const [lab,cl]=map[v.action]||['—','wait'];
-    const reason=shortReason(v);
-    return `<div class="apreview">
-      <span class="apill ${cl}">${lab}</span>
-      <span class="muted">Ishonch: <b>${Math.round(+v.confidence||0)}%</b></span>
-      <span class="muted">Xatar: <b>${esc(v.risk||'-')}</b></span></div>
-      ${reason?`<div class="muted" style="margin-top:.35rem;font-size:.83rem">${esc(reason)}</div>`:''}`;
-  }
-  const raw=(v?(v.comment||''):(a.summary||''))
-    .replace(/\[\/?[-+~!]\]/g,'').replace(/[#*`_>]/g,'');
-  let ls=raw.split('\n').map(x=>x.trim()).filter(Boolean);
-  if(ls.length>1&&ls[0].length<70)ls.shift();   // "Bozor xulosasi:" kabi sarlavhani tashlaymiz
-  const plain=ls.join(' ').replace(/\s+/g,' ').trim();
-  return plain?`<div class="asnip">${esc(plain.slice(0,220))}</div>`:'';
-}
-async function renderAnalyses(kind,target,emptyMsg){
-  const list=await api('/api/analyses?limit=20&kind='+kind);
-  if(!list.length){$(target).innerHTML=`<div class="section muted">${emptyMsg}</div>`;return;}
-  $(target).innerHTML=list.map(a=>{
-    const key=kind+':'+a.id;
-    const applied=a.applied===1, notApplied=a.applied===0;
-    let v=null;try{const p=JSON.parse(a.summary);if(p&&p.action)v=p;}catch(e){}
-    return `<details class="acard" data-key="${key}"${openCards.has(key)?' open':''}>
-      <summary>
-        <div class="ahead">
-          <div class="row" style="gap:.5rem">
-            <span class="badge badge-buy">${a.coin}</span>
-            <span class="muted">${fdate(a.created_at)} · ${a.mode==='auto'?'avtomatik':"qo'lda"}</span>
-          </div>
-          <div class="row" style="gap:.4rem">
-            ${a.outcome==='good'?'<span class="badge badge-buy">O\'xshadi</span>':''}
-            ${a.outcome==='bad'?'<span class="badge badge-sell">O\'xshamadi</span>':''}
-            <span class="achev">▼</span>
-          </div>
+  const showApplied = kind === 'swing';
+  el.innerHTML = data.map(a => {
+    let v = null;
+    try { const p = JSON.parse(a.summary); if (p && p.action) v = p; } catch (e) {}
+    const act = v ? v.action : 'WAIT';
+    const actClass = act === 'BUY' ? 'buy' : act === 'SELL' ? 'sell' : 'wait';
+    const actText = act === 'BUY' ? 'SOTIB OL' : act === 'SELL' ? 'SOTISH' : 'KUTISH';
+    const badgeClass = act === 'BUY' ? 'badge-buy' : act === 'SELL' ? 'badge-sell' : 'badge-wait';
+    const applied = a.applied === 1, notApplied = a.applied === 0;
+    const preview = v ? shortReason(v) : '';
+
+    return `
+    <div class="analysis-item" onclick="this.classList.toggle('open')">
+      <div class="analysis-header">
+        <div style="flex:1;min-width:0">
+          <div><span style="font-weight:700;font-size:1.1rem">${esc(a.coin)}</span>
+          <span class="muted" style="margin-left:0.5rem;font-size:0.8rem">${fdate(a.created_at)}</span></div>
+          ${preview ? `<div class="muted" style="font-size:0.83rem;margin-top:0.3rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(preview)}</div>` : ''}
         </div>
-        ${previewOf(kind,a,v)}
-      </summary>
-      <div class="abody">
-        ${(kind==='swing'||kind==='fast')?verdictCard(a):`<div style="white-space:pre-wrap;margin:.75rem 0">${md(a.summary)}</div>`}
-        ${kind==='news'?'':aiBlocks(a)}
-        ${(kind==='news'||kind==='fast')?'':`<div class="row" style="margin-top:1rem">
-          <button class="fbtn ${applied?'on':''}" onclick="fb(${a.id},{applied:true})">Amalga oshirdim</button>
-          <button class="fbtn ${notApplied?'on':''}" onclick="fb(${a.id},{applied:false})">Qo'llamadim</button>
-          ${applied?`
-            <button class="fbtn ${a.outcome==='good'?'on-green':''}" onclick="fb(${a.id},{outcome:'${a.outcome==='good'?'clear':'good'}'})">O'xshadi 👍</button>
-            <button class="fbtn ${a.outcome==='bad'?'on-red':''}" onclick="fb(${a.id},{outcome:'${a.outcome==='bad'?'clear':'bad'}'})">O'xshamadi 👎</button>`:''}
-        </div>`}
+        <div style="display:flex;align-items:center;gap:0.75rem;flex-shrink:0">
+          <span class="badge ${badgeClass}">${actText}</span>
+          <svg class="chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
       </div>
-    </details>`;}).join('');
-  $(target).querySelectorAll('.acard').forEach(d=>d.addEventListener('toggle',()=>{
-    d.open?openCards.add(d.dataset.key):openCards.delete(d.dataset.key);}));
-}
-window.fb=async(id,body)=>{await post(`/api/analyses/${id}/feedback`,body);loadAnalyses();};
+      <div class="analysis-body" onclick="event.stopPropagation()">
+        ${v ? `
+        <div class="verdict-core ${actClass}">
+          <div class="act">${actText}</div>
+          <div class="muted">Ishonch: <span class="num" style="color:var(--text);font-weight:700">${v.confidence}%</span> · Xatar: ${v.risk === 'past' ? 'Past' : v.risk === 'o\'rta' ? 'O\'rta' : 'Yuqori'} · <span class="badge badge-info" style="font-size:0.65rem">Hakam: Claude</span></div>
+        </div>
+        <div class="bento-grid" style="margin:1rem 0">
+          ${v.entry_low ? `<div class="bento-card" style="text-align:center;padding:1rem"><h3>Kirish</h3><div class="value num positive" style="font-size:1.2rem">$${fmtS(v.entry_low)}${v.entry_high ? ' - $' + fmtS(v.entry_high) : ''}</div></div>` : ''}
+          ${v.stop ? `<div class="bento-card" style="text-align:center;padding:1rem"><h3>Stop</h3><div class="value num negative" style="font-size:1.2rem">$${fmtS(v.stop)}</div></div>` : ''}
+          ${v.targets && v.targets.length ? `<div class="bento-card" style="text-align:center;padding:1rem"><h3>Maqsad</h3><div class="value num positive" style="font-size:1.2rem">$${fmtS(v.targets[0])}</div></div>` : ''}
+        </div>
+        ${priceScale(v, a.price)}
+        <p style="line-height:1.7;margin-bottom:1rem;color:var(--text-muted)">${esc(v.comment || '').replace(/\n/g, '<br>')}</p>
+        ${v.disagreement ? `<p class="muted">⚖️ ${esc(v.disagreement)}</p>` : ''}
+        ${v.judge_note ? `<p class="muted">${esc(v.judge_note)}</p>` : ''}
+        ` : `<p class="muted" style="line-height:1.7;white-space:pre-wrap">${esc(a.summary)}</p>`}
 
-$('#btn-analyze').onclick=()=>startAnalyze($('#manual-coin').value,'swing');
-$('#btn-long').onclick=()=>startAnalyze($('#long-coin').value,'long');
-$('#btn-nima-auto').onclick=()=>startWhatsup('');
-$('#btn-nima-coin').onclick=()=>startWhatsup($('#nima-coin').value);
-async function startWhatsup(coin){
-  try{
-    await api('/api/whatsup'+(coin?`?coin=${coin}`:''),{method:'POST'});
-    toast(coin?coin+' bo\'yicha yangiliklar tahlili boshlandi':'Butun bozor tahlil qilinmoqda…');
-    pollStatus();
-  }catch(e){toast(e.message);}
+        ${showApplied ? `
+        <div class="form-row" style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border)">
+          <span class="muted" style="font-size:0.8rem;margin-right:0.5rem;align-self:center">Amalga oshirdingizmi:</span>
+          <button class="btn btn-sm ${applied ? 'btn-primary' : 'btn-secondary'}" onclick="event.stopPropagation();setApplied(${a.id}, true)">Amalga oshirdim</button>
+          <button class="btn btn-sm ${notApplied ? 'btn-danger' : 'btn-secondary'}" onclick="event.stopPropagation();setApplied(${a.id}, false)">Qo'llamadim</button>
+        </div>
+        ${applied ? `
+        <div class="form-row" style="margin-top:0.75rem;align-items:center">
+          <span class="muted" style="font-size:0.8rem;margin-right:0.5rem">Natija:</span>
+          <button class="btn btn-sm ${a.outcome === 'good' ? 'btn-primary' : 'btn-secondary'}" onclick="event.stopPropagation();feedback(${a.id}, 'good')">O'xshadi</button>
+          <button class="btn btn-sm ${a.outcome === 'bad' ? 'btn-danger' : 'btn-secondary'}" onclick="event.stopPropagation();feedback(${a.id}, 'bad')">O'xshamadi</button>
+          <button class="btn btn-sm btn-secondary" title="Tozalash" onclick="event.stopPropagation();feedback(${a.id}, 'clear')" style="padding:0.5rem;min-width:36px">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+          </button>
+        </div>` : ''}` : ''}
+        ${(v && v.analyst_summaries) ? aiBlocks(a, v) : ''}
+      </div>
+    </div>`;
+  }).join('');
 }
-async function startAnalyze(coin,kind){
-  try{
-    await api(`/api/analyze?kind=${kind}`+(coin?`&coin=${coin}`:''),{method:'POST'});
-    toast('Tahlil boshlandi — bir necha daqiqa davom etadi');pollStatus();
-  }catch(e){toast(e.message);}
-}
-let pollTimer=null;
-function paintLiveStatus(s){
-  const box=$('#run-live');
-  if(s.running&&s.step){
-    box.style.display='flex';
-    const coinTxt=s.coin&&s.coin!=='BOZOR'?`<b>${s.coin}</b> · `:'';
-    const cntTxt=s.step_n>1?` (${s.step_i}/${s.step_n})`:'';
-    box.innerHTML=`<span class="dot"></span><span>${coinTxt}${s.step}${cntTxt}</span>`;
-  }else{
-    box.style.display='none';box.innerHTML='';
+
+window.setApplied = async (id, applied) => {
+  await post(`/api/analyses/${id}/feedback`, { applied });
+  toast('Saqlandi');
+  loadAnalyses(currentAnalysesKind, currentAnalysesTarget, currentAnalysesEmpty);
+};
+window.feedback = async (id, outcome) => {
+  await post(`/api/analyses/${id}/feedback`, { outcome });
+  toast('Saqlandi');
+  loadAnalyses(currentAnalysesKind, currentAnalysesTarget, currentAnalysesEmpty);
+};
+
+let pollTimer = null;
+function paintLiveStatus(s) {
+  const box = $('#run-live');
+  if (s.running && s.step) {
+    box.style.display = 'flex';
+    const coinTxt = s.coin && s.coin !== 'BOZOR' ? `${esc(s.coin)} · ` : '';
+    const cntTxt = s.step_n > 1 ? ` (${s.step_i}/${s.step_n})` : '';
+    $('#run-live-text').textContent = coinTxt + s.step + cntTxt;
+  } else {
+    box.style.display = 'none';
   }
 }
-async function pollStatus(){
+async function pollStatus() {
   clearInterval(pollTimer);
-  pollTimer=setInterval(async()=>{
-    const s=await api('/api/status');
-    $('#run-status').style.display=s.running?'inline-block':'none';
+  pollTimer = setInterval(async () => {
+    const s = await api('/api/status');
+    $('#run-status').style.display = s.running ? 'inline-block' : 'none';
     paintLiveStatus(s);
-    if(!s.running){clearInterval(pollTimer);loadAnalyses();loadTraderTrades();
-      if(s.last_error)toast('Xatolik: '+s.last_error);
-      if(s.trader_log)toast('AI Trader: '+s.trader_log);}
-  },1500);
+    if (!s.running) {
+      clearInterval(pollTimer);
+      loadAnalyses(currentAnalysesKind, currentAnalysesTarget, currentAnalysesEmpty);
+      loadTraderTrades();
+      if (s.last_error) toast('Xatolik: ' + s.last_error);
+      if (s.trader_log) toast('AI Trader: ' + s.trader_log);
+    }
+  }, 1500);
 }
 
-// ---- Bozor ----
-let marketTf='1h',marketLimit=24;
-document.querySelectorAll('.tab[data-mtf]').forEach(t=>t.onclick=()=>{
-  document.querySelectorAll('.tab[data-mtf]').forEach(x=>x.classList.remove('active'));
-  t.classList.add('active');marketTf=t.dataset.mtf;marketLimit=+t.dataset.mlimit;loadMarket();
+$('#btn-analyze').onclick = async () => {
+  const coin = $('#manual-coin').value;
+  try {
+    await api('/api/analyze?kind=swing' + (coin ? '&coin=' + encodeURIComponent(coin) : ''), { method: 'POST' });
+    toast('Tahlil boshlandi');
+    pollStatus();
+  } catch (e) { toast(e.message); }
+};
+
+let marketTf = '1h', marketLimit = 24;
+document.querySelectorAll('[data-mtf]').forEach(btn => {
+  btn.onclick = () => {
+    document.querySelectorAll('[data-mtf]').forEach(b => b.className = 'btn btn-sm btn-secondary');
+    btn.className = 'btn btn-sm btn-primary';
+    marketTf = btn.dataset.mtf; marketLimit = +btn.dataset.mlimit;
+    loadMarket();
+  };
 });
-$('#btn-market-refresh').onclick=()=>{loadMarket();loadSentiment();};
-async function loadSentiment(){
-  try{
-    const d=await api('/api/sentiment');
-    if(d.error){$('#fng-value').textContent='—';$('#fng-label').textContent='olinmadi: '+d.error;return;}
-    const v=d.value;
-    const color=v<25?'#ef4444':v<45?'#f59e0b':v<56?'#6b7280':v<75?'#84cc16':'#10b981';
-    $('#fng-value').textContent=v;
-    $('#fng-value').style.color=color;
-    $('#fng-label').textContent=d.label_uz;
-    $('#fng-label').style.color=color;
-    $('#fng-marker').style.left=v+'%';
-    draw('ch-fng',{type:'line',data:{labels:d.history.map(h=>h.date),
-      datasets:[{data:d.history.map(h=>h.value),borderColor:'#6b7280',
-        backgroundColor:'rgba(107,114,128,.08)',tension:.3,fill:true,pointRadius:2,borderWidth:2}]},
-      options:{plugins:{legend:{display:false}},
-        scales:{y:{min:0,max:100,ticks:{stepSize:25}}}}});
-  }catch(e){$('#fng-label').textContent='olinmadi';}
-}
-async function loadMarket(){
-  const el=$('#market-list');
-  el.innerHTML='<div class="section muted">Yuklanmoqda…</div>';
+
+async function loadMarket() {
+  try {
+    const s = await api('/api/sentiment');
+    if (s && !s.error) {
+      const v = s.value;
+      const color = v < 25 ? '#ef4444' : v < 45 ? '#f59e0b' : v < 56 ? '#a1a1aa' : v < 75 ? '#84cc16' : '#10b981';
+      $('#fng-value').textContent = v;
+      $('#fng-value').style.color = color;
+      $('#fng-label').textContent = s.label_uz || s.label_en || '';
+      $('#fng-label').style.color = color;
+      $('#fng-marker').style.left = v + '%';
+      if (s.history && s.history.length) {
+        draw('ch-fng', { type: 'line', data: { labels: s.history.map(h => h.date), datasets: [{ data: s.history.map(h => h.value), borderColor: '#a1a1aa', backgroundColor: 'rgba(161,161,170,.1)', tension: 0.3, fill: true, pointRadius: 0, borderWidth: 2 }] }, options: { plugins: { legend: { display: false } }, scales: { y: { min: 0, max: 100, ticks: { stepSize: 25 } } } } });
+      }
+    } else if (s && s.error) {
+      $('#fng-value').textContent = '—'; $('#fng-label').textContent = 'olinmadi: ' + s.error;
+    }
+  } catch (e) {}
+
+  const el = $('#market-list');
+  el.innerHTML = '<div class="bento-card span-4"><p class="muted">Yuklanmoqda…</p></div>';
   let data;
-  try{data=await api(`/api/watch?tf=${marketTf}&limit=${marketLimit}`);}
-  catch(e){el.innerHTML=`<div class="section negative">Xatolik: ${esc(e.message)}</div>`;return;}
-  if(!data.length){el.innerHTML='<div class="section muted">Kuzatuv ro\'yxati bo\'sh.</div>';return;}
-  el.innerHTML=data.map((d,i)=>{
-    if(d.error)return `<div class="section"><b>${d.coin}</b> <span class="negative">— ma'lumot olinmadi</span></div>`;
-    const up=(d.change24??0)>=0;
-    return `<div class="section">
-      <div class="row" style="justify-content:space-between;margin-bottom:.5rem">
-        <div class="row"><span style="font-weight:600;font-size:1.1rem">${d.coin}/USDT</span>
-          <span style="font-size:1.3rem;font-weight:600">$${fmtP(d.price)}</span></div>
-        <span class="${up?'positive':'negative'}" style="font-weight:600">
-          ${d.change24==null?'':(up?'+':'')+d.change24.toFixed(2)+'% (24s)'}</span>
+  try { data = await api(`/api/watch?tf=${marketTf}&limit=${marketLimit}`); }
+  catch (e) { el.innerHTML = `<div class="bento-card span-4"><p class="negative">Xatolik: ${esc(e.message)}</p></div>`; return; }
+  if (!data.length) { el.innerHTML = '<div class="bento-card span-4"><p class="muted">Kuzatuv ro\'yxati bo\'sh.</p></div>'; return; }
+
+  el.innerHTML = data.map((d, i) => {
+    if (d.error) return `<div class="bento-card span-2"><b>${esc(d.coin)}</b> <span class="negative">— ma'lumot olinmadi</span></div>`;
+    const up = (d.change24 ?? 0) >= 0;
+    return `<div class="bento-card span-2">
+      <div class="form-row" style="justify-content:space-between;margin-bottom:0.5rem">
+        <div><span style="font-weight:700;font-size:1.05rem">${esc(d.coin)}/USDT</span>
+          <span class="num" style="font-size:1.1rem;margin-left:0.5rem">$${fmtS(d.price)}</span></div>
+        <span class="${up ? 'positive' : 'negative'}" style="font-weight:600">
+          ${d.change24 == null ? '—' : (up ? '+' : '') + d.change24.toFixed(2) + '% (24s)'}</span>
       </div>
-      <canvas id="mch-${i}" style="max-height:180px"></canvas></div>`;
+      <div class="chart-box" style="height:140px"><canvas id="mch-${i}"></canvas></div>
+    </div>`;
   }).join('');
-  data.forEach((d,i)=>{
-    if(d.error)return;
-    const first=d.series[0].c,last=d.series[d.series.length-1].c;
-    const color=last>=first?'#10b981':'#ef4444';
-    const bg=last>=first?'rgba(16,185,129,.08)':'rgba(239,68,68,.08)';
-    draw('mch-'+i,{type:'line',data:{
-      labels:d.series.map(p=>{const dt=new Date(p.t);
-        return marketTf==='1h'?dt.toLocaleTimeString('uz-UZ',{hour:'2-digit',minute:'2-digit'})
-          :dt.toLocaleDateString('uz-UZ',{day:'2-digit',month:'2-digit'});}),
-      datasets:[{data:d.series.map(p=>p.c),borderColor:color,backgroundColor:bg,
-        tension:.25,fill:true,pointRadius:0,borderWidth:2}]},
-      options:{plugins:{legend:{display:false}},
-        scales:{x:{ticks:{maxTicksLimit:6}},y:{ticks:{maxTicksLimit:5}}},
-        interaction:{intersect:false,mode:'index'}}});
+
+  data.forEach((d, i) => {
+    if (d.error || !d.series || !d.series.length) return;
+    const first = d.series[0].c, last = d.series[d.series.length - 1].c;
+    const color = last >= first ? '#10b981' : '#f43f5e';
+    const bg = last >= first ? 'rgba(16,185,129,.08)' : 'rgba(244,63,94,.08)';
+    draw('mch-' + i, {
+      type: 'line',
+      data: {
+        labels: d.series.map(p => {
+          const dt = new Date(p.t);
+          return marketTf === '1h' ? dt.toLocaleTimeString('uz-UZ', { hour: '2-digit', minute: '2-digit' })
+            : dt.toLocaleDateString('uz-UZ', { day: '2-digit', month: '2-digit' });
+        }),
+        datasets: [{ data: d.series.map(p => p.c), borderColor: color, backgroundColor: bg, tension: 0.25, fill: true, pointRadius: 0, borderWidth: 2 }]
+      },
+      options: { plugins: { legend: { display: false } }, scales: { x: { ticks: { maxTicksLimit: 6 } }, y: { ticks: { maxTicksLimit: 5 } } }, interaction: { intersect: false, mode: 'index' } }
+    });
   });
 }
+$('#btn-market-refresh').onclick = () => { toast('Yangilanmoqda…'); loadMarket(); };
 
-// ---- Jurnal (rasm asosida) ----
-function liveCell(t,p){
-  if(!p)return '—';
-  const f=t.fee_rate/100,g=t.amount_usd*(p/t.entry_price-1),
-    net=g-t.amount_usd*f-t.amount_usd*(p/t.entry_price)*f,pct=net/t.amount_usd*100;
-  return `<span class="${net>=0?'positive':'negative'}">${money(net)} (${pct>=0?'+':''}${pct.toFixed(2)}%)</span>`;
-}
+$('#btn-nima-auto').onclick = async () => {
+  try { await api('/api/whatsup', { method: 'POST' }); toast('Bozor tahlili boshlandi'); pollStatus(); }
+  catch (e) { toast(e.message); }
+};
+$('#btn-nima-coin').onclick = async () => {
+  const coin = $('#nima-coin').value;
+  if (!coin) { toast('Koin tanlang'); return; }
+  try { await api('/api/whatsup?coin=' + encodeURIComponent(coin), { method: 'POST' }); toast('Tahlil boshlandi'); pollStatus(); }
+  catch (e) { toast(e.message); }
+};
 
-function fileToBase64(file){
-  return new Promise((res,rej)=>{
-    const r=new FileReader();
-    r.onload=()=>res(r.result.split(',')[1]);
-    r.onerror=rej;
+$('#btn-long').onclick = async () => {
+  const coin = $('#long-coin').value;
+  try { await api('/api/analyze?kind=long' + (coin ? '&coin=' + encodeURIComponent(coin) : ''), { method: 'POST' }); toast('Uzoq muddatli tahlil boshlandi'); pollStatus(); }
+  catch (e) { toast(e.message); }
+};
+
+let jEntryCache = {};
+const jEntryRow = (e, coin) => {
+  const cost = (e.avg_cost_usd || 0) * e.qty;
+  const pct = (e.net_usd != null && cost > 0) ? +(e.net_usd / cost * 100).toFixed(2) : null;
+  return `
+  <tr id="jrow-${e.id}">
+    <td><span class="badge ${e.side === 'buy' ? 'badge-buy' : e.side === 'sell' ? 'badge-sell' : 'badge-wait'}">${e.side === 'earn' ? 'Earn' : (e.side === 'buy' ? 'Xarid' : 'Sotish')}</span></td>
+    <td class="num">${fmtP(e.qty)}</td>
+    <td class="num">$${fmtS(e.price)}</td>
+    <td class="num">$${fmtS(e.usd_value)}</td>
+    <td class="num soft">${e.fee ? fmtP(e.fee) + (e.fee_asset ? ' ' + e.fee_asset : '') + (e.fee_usd ? ` ($${fmtS(e.fee_usd)})` : '') : '—'}</td>
+    <td class="num">${e.net_usd != null ? pnlTxt(e.net_usd, pct) : '<span class="muted">—</span>'}</td>
+    <td class="muted">${(e.created_at || '').slice(0, 16).replace('T', ' ')}</td>
+    <td style="text-align:right">
+      <button class="btn btn-sm btn-secondary" onclick="jEditEntry(${e.id}, '${coin}')">✏️</button>
+      <button class="btn btn-sm btn-danger" onclick="jDelEntry(${e.id}, '${coin}')">🗑️</button>
+    </td>
+  </tr>`;
+};
+
+window.jEditEntry = (id, coin) => {
+  const e = jEntryCache[id];
+  document.getElementById('jrow-' + id).innerHTML = `
+    <td colspan="6">
+      <div class="form-row" style="margin:0.5rem 0">
+        <div class="form-group"><label>Miqdor</label><input id="je-qty-${id}" type="number" step="any" value="${e.qty}"></div>
+        <div class="form-group"><label>Narx ($)</label><input id="je-price-${id}" type="number" step="any" value="${e.price}"></div>
+        <div class="form-group"><label>Summa ($)</label><input id="je-usd-${id}" type="number" step="any" value="${e.usd_value}"></div>
+        <div class="form-group"><label>Komissiya</label><input id="je-fee-${id}" type="number" step="any" value="${e.fee || 0}"></div>
+        <div class="form-group"><label>Sana</label><input id="je-date-${id}" type="datetime-local" value="${(e.created_at || '').slice(0, 16)}"></div>
+      </div>
+      <div class="form-row">
+        <button class="btn btn-sm btn-primary" onclick="jSaveEntry(${id}, '${coin}')">Saqlash</button>
+        <button class="btn btn-sm btn-secondary" onclick="jCancelEdit(${id}, '${coin}')">Bekor qilish</button>
+      </div>
+    </td>`;
+};
+window.jCancelEdit = (id, coin) => {
+  document.getElementById('jrow-' + id).outerHTML = jEntryRow(jEntryCache[id], coin);
+};
+window.jSaveEntry = async (id, coin) => {
+  const body = {
+    qty: +$('#je-qty-' + id).value, price: +$('#je-price-' + id).value || 0,
+    usd_value: +$('#je-usd-' + id).value || 0, fee: +$('#je-fee-' + id).value || 0,
+    fee_asset: jEntryCache[id].fee_asset,
+    created_at: $('#je-date-' + id).value ? new Date($('#je-date-' + id).value).toISOString() : null
+  };
+  if (!body.qty) { toast('Miqdorni kiriting'); return; }
+  try {
+    await api(`/api/journal/entries/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+    toast('Yangilandi');
+    loadJournal(); loadSummary();
+  } catch (e) { toast(e.message); }
+};
+
+function fileToBase64(file) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = () => res(r.result.split(',')[1]);
+    r.onerror = rej;
     r.readAsDataURL(file);
   });
 }
 
-$('#j-upload-btn').onclick=()=>$('#j-file').click();
-$('#j-file').onchange=async e=>{
-  const file=e.target.files[0];if(!file)return;
-  e.target.value='';
-  $('#j-draft').innerHTML='<div class="section muted">Skrinshot o\'qilmoqda…</div>';
-  try{
-    const b64=await fileToBase64(file);
-    const media_type=file.type||'image/png';
-    const r=await api('/api/journal/read',{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({image_base64:b64,media_type})});
+$('#j-upload-btn').onclick = () => $('#j-file').click();
+$('#j-file').onchange = async e => {
+  const file = e.target.files[0]; if (!file) return;
+  e.target.value = '';
+  $('#j-draft').innerHTML = '<p class="muted">Skrinshot o\'qilmoqda…</p>';
+  try {
+    const b64 = await fileToBase64(file);
+    const media_type = file.type || 'image/png';
+    const r = await post('/api/journal/read', { image_base64: b64, media_type });
     renderDraft(r.draft, r.duplicate, r.current_position);
-  }catch(err){
-    $('#j-draft').innerHTML=`<div class="section negative">Xatolik: ${esc(err.message)}</div>`;
+  } catch (err) {
+    $('#j-draft').innerHTML = `<p class="negative">Xatolik: ${esc(err.message)}</p>`;
   }
 };
-$('#j-manual-btn').onclick=()=>renderDraft({side:'buy',coin:'',qty:null,price:null,
-  usd_value:null,fee:0,fee_asset:'USDT',order_id:null,created_at:null,confidence:null}, null, null);
+$('#j-manual-btn').onclick = () => {
+  if ($('#j-draft').innerHTML.trim()) { $('#j-draft').innerHTML = ''; return; }
+  renderDraft({
+    side: 'buy', coin: '', qty: null, price: null,
+    usd_value: null, fee: 0, fee_asset: 'USDT', order_id: null, created_at: null, confidence: null
+  }, null, null);
+};
 
-function renderDraft(d, dup, curPos){
-  const dupWarn=dup?`<div class="section negative" style="margin-bottom:.75rem">
-      ⚠️ Bu buyurtma (№${esc(dup.id+'')}) allaqachon qo'shilgan: ${esc(dup.side)} ${dup.qty} ${esc(dup.coin)}
-      @ $${dup.price}. Baribir qo'shmoqchi bo'lsangiz, pastdagi "Order ID" maydonini bo'sh qoldiring.
-    </div>`:'';
-  const lowConf=d.confidence==='low'?`<p class="negative" style="margin-bottom:.6rem">
-      ⚠️ AI ba'zi maydonlarni aniq o'qiy olmadi — pastdagilarni tekshirib, kerak bo'lsa tuzating.</p>`:'';
-  const posLine=curPos&&curPos.qty>0?`<p class="muted" style="margin-bottom:.6rem">
-      Hozirgi ${esc(d.coin||'')} pozitsiyasi: ${curPos.qty} ta,
-      o'rtacha $${fmtS(curPos.cost_usd/curPos.qty)}</p>`:'';
-  $('#j-draft').innerHTML=`<div class="section" style="border:2px solid #10b981;margin-top:1rem">
-    <h3 class="sub" style="margin-top:0">Tasdiqlang</h3>
-    ${dupWarn}${lowConf}
-    <div class="row" style="margin-bottom:.75rem">
-      <button class="fbtn mini ${d.side==='buy'?'on-green':''}" id="jd-buy">Xarid</button>
-      <button class="fbtn mini ${d.side==='sell'?'on-red':''}" id="jd-sell">Sotish</button>
-      <button class="fbtn mini ${d.side==='earn'?'on':''}" id="jd-earn">Earn (bepul)</button>
+function renderDraft(d, dup, curPos) {
+  const dupWarn = dup ? `<div class="bento-card" style="border-color:var(--danger);margin-bottom:0.75rem">
+      <span class="negative">⚠️ Bu buyurtma (№${esc(dup.id + '')}) allaqachon qo'shilgan: ${esc(dup.side)} ${dup.qty} ${esc(dup.coin)}
+      @ $${dup.price}. Baribir qo'shmoqchi bo'lsangiz, pastdagi "Order ID" maydonini bo'sh qoldiring.</span>
+    </div>` : '';
+  const lowConf = d.confidence === 'low' ? `<p class="negative" style="margin-bottom:0.6rem">
+      ⚠️ AI ba'zi maydonlarni aniq o'qiy olmadi — pastdagilarni tekshirib, kerak bo'lsa tuzating.</p>` : '';
+  const posLine = curPos && curPos.qty > 0 ? `<p class="muted" style="margin-bottom:0.6rem">
+      Hozirgi ${esc(d.coin || '')} pozitsiyasi: ${curPos.qty} ta, o'rtacha $${fmtS(curPos.cost_usd / curPos.qty)}</p>` : '';
+
+  $('#j-draft').innerHTML = `<div class="bento-card" style="border-color:var(--primary);text-align:left">
+    <div class="form-row" style="justify-content:space-between;align-items:center;margin-bottom:0.75rem">
+      <h3 style="font-size:0.9rem;text-transform:none;letter-spacing:0;color:var(--text);margin:0">Tasdiqlang</h3>
+      <button class="btn btn-sm btn-secondary" onclick="document.getElementById('j-draft').innerHTML=''" style="padding:0.3rem 0.6rem">✕</button>
     </div>
-    <p class="muted" id="jd-earn-note" style="display:none;margin-bottom:.6rem">
+    ${dupWarn}${lowConf}
+    <div class="form-row" style="margin-bottom:0.75rem">
+      <button class="btn btn-sm btn-secondary" id="jd-buy" style="flex:1">Xarid</button>
+      <button class="btn btn-sm btn-secondary" id="jd-sell" style="flex:1">Sotish</button>
+      <button class="btn btn-sm btn-secondary" id="jd-earn" style="flex:1">Earn (bepul)</button>
+    </div>
+    <p class="muted" id="jd-earn-note" style="display:none;margin-bottom:0.6rem">
       Earn/Staking'dan bepul kelgan koin. Narx va summani $0 qoldirsangiz bo'ladi —
       miqdor shu koinning umumiy pozitsiyasiga qo'shiladi va o'rtacha narxni to'g'ri pasaytiradi.</p>
-    <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.8rem;margin-bottom:0">
-      <div class="form-group"><label>Koin</label><input id="jd-coin" value="${esc(d.coin||'')}" placeholder="SUI"></div>
-      <div class="form-group"><label>Miqdor</label><input id="jd-qty" type="number" step="any" value="${d.qty??''}"></div>
-      <div class="form-group"><label id="jd-price-lbl">Narx ($)</label><input id="jd-price" type="number" step="any" value="${d.price??''}"></div>
-      <div class="form-group"><label id="jd-usd-lbl">Jami summa ($)</label><input id="jd-usd" type="number" step="any" value="${d.usd_value??''}"></div>
-      <div class="form-group"><label>Komissiya</label><input id="jd-fee" type="number" step="any" value="${d.fee??0}"></div>
-      <div class="form-group"><label>Komissiya valyutasi</label><input id="jd-fee-asset" value="${esc(d.fee_asset||'USDT')}"></div>
-      <div class="form-group"><label>Order ID (ixtiyoriy)</label><input id="jd-order" value="${esc(dup?'':(d.order_id||''))}"></div>
-      <div class="form-group"><label>Sana</label><input id="jd-date" type="datetime-local" value="${(d.created_at||'').slice(0,16)}"></div>
+    <div class="form-row" style="flex-wrap:wrap">
+      <div class="form-group"><label>Koin</label><input id="jd-coin" value="${esc(d.coin || '')}" placeholder="SUI"></div>
+      <div class="form-group"><label>Miqdor</label><input id="jd-qty" type="number" step="any" value="${d.qty ?? ''}"></div>
+      <div class="form-group"><label id="jd-price-lbl">Narx ($)</label><input id="jd-price" type="number" step="any" value="${d.price ?? ''}"></div>
+      <div class="form-group"><label id="jd-usd-lbl">Jami summa ($)</label><input id="jd-usd" type="number" step="any" value="${d.usd_value ?? ''}"></div>
+      <div class="form-group"><label>Komissiya</label><input id="jd-fee" type="number" step="any" value="${d.fee ?? 0}"></div>
+      <div class="form-group"><label>Komissiya valyutasi</label><input id="jd-fee-asset" value="${esc(d.fee_asset || 'USDT')}"></div>
+      <div class="form-group"><label>Order ID (ixtiyoriy)</label><input id="jd-order" value="${esc(dup ? '' : (d.order_id || ''))}"></div>
+      <div class="form-group"><label>Sana</label><input id="jd-date" type="datetime-local" value="${(d.created_at || '').slice(0, 16)}"></div>
     </div>
     ${posLine}
-    <div class="row" style="margin-top:.5rem">
-      <button id="jd-confirm">Saqlash</button>
-      <button class="secondary" id="jd-cancel">Bekor qilish</button>
+    <div class="form-row" style="margin-top:0.5rem;margin-bottom:0">
+      <button class="btn btn-primary" id="jd-confirm">Saqlash</button>
+      <button class="btn btn-secondary" id="jd-cancel">Bekor qilish</button>
     </div>
   </div>`;
-  let side=d.side==='sell'?'sell':(d.side==='earn'?'earn':'buy');
-  const setSide=s=>{side=s;
-    $('#jd-buy').className='fbtn mini '+(s==='buy'?'on-green':'');
-    $('#jd-sell').className='fbtn mini '+(s==='sell'?'on-red':'');
-    $('#jd-earn').className='fbtn mini '+(s==='earn'?'on':'');
-    $('#jd-earn-note').style.display=s==='earn'?'block':'none';
-    if(s==='earn'){
-      if(!$('#jd-price').value)$('#jd-price').value=0;
-      if(!$('#jd-usd').value)$('#jd-usd').value=0;
-      $('#jd-price-lbl').textContent="Narx ($) — bepul bo'lsa 0";
-      $('#jd-usd-lbl').textContent="Jami summa ($) — bepul bo'lsa 0";
-    }else{
-      $('#jd-price-lbl').textContent='Narx ($)';
-      $('#jd-usd-lbl').textContent='Jami summa ($)';
-    }};
+
+  let side = d.side === 'sell' ? 'sell' : (d.side === 'earn' ? 'earn' : 'buy');
+  const setSide = s => {
+    side = s;
+    $('#jd-buy').className = 'btn btn-sm ' + (s === 'buy' ? 'btn-primary' : 'btn-secondary');
+    $('#jd-sell').className = 'btn btn-sm ' + (s === 'sell' ? 'btn-danger' : 'btn-secondary');
+    $('#jd-earn').className = 'btn btn-sm ' + (s === 'earn' ? 'btn-primary' : 'btn-secondary');
+    $('#jd-earn-note').style.display = s === 'earn' ? 'block' : 'none';
+    if (s === 'earn') {
+      if (!$('#jd-price').value) $('#jd-price').value = 0;
+      if (!$('#jd-usd').value) $('#jd-usd').value = 0;
+      $('#jd-price-lbl').textContent = "Narx ($) — bepul bo'lsa 0";
+      $('#jd-usd-lbl').textContent = "Jami summa ($) — bepul bo'lsa 0";
+    } else {
+      $('#jd-price-lbl').textContent = 'Narx ($)';
+      $('#jd-usd-lbl').textContent = 'Jami summa ($)';
+    }
+  };
   setSide(side);
-  $('#jd-buy').onclick=()=>setSide('buy');
-  $('#jd-sell').onclick=()=>setSide('sell');
-  $('#jd-earn').onclick=()=>setSide('earn');
-  $('#jd-cancel').onclick=()=>{$('#j-draft').innerHTML='';};
-  $('#jd-confirm').onclick=async()=>{
-    const body={side, coin:$('#jd-coin').value.trim().toUpperCase(),
-      qty:+$('#jd-qty').value, price:+$('#jd-price').value||0, usd_value:+$('#jd-usd').value||0,
-      fee:+$('#jd-fee').value||0, fee_asset:$('#jd-fee-asset').value.trim()||null,
-      order_id:$('#jd-order').value.trim()||null,
-      created_at:$('#jd-date').value?new Date($('#jd-date').value).toISOString():null};
-    if(!body.coin||!body.qty){toast('Koin va miqdorni to\'ldiring');return;}
-    if(side!=='earn'&&(!body.price||!body.usd_value)){toast('Narx va summani to\'ldiring');return;}
-    try{
-      const r=await post('/api/journal/confirm',body);
-      if(r.side==='sell'){
-        toast(`Saqlandi. Sof natija: ${money(r.net_usd)}${r.over_sold?' — DIQQAT: pozitsiyadan ko\'p sotildi!':''}`);
-      }else toast('Saqlandi');
-      $('#j-draft').innerHTML='';
+  $('#jd-buy').onclick = () => setSide('buy');
+  $('#jd-sell').onclick = () => setSide('sell');
+  $('#jd-earn').onclick = () => setSide('earn');
+  $('#jd-cancel').onclick = () => { $('#j-draft').innerHTML = ''; };
+  $('#jd-confirm').onclick = async () => {
+    const body = {
+      side, coin: $('#jd-coin').value.trim().toUpperCase(),
+      qty: +$('#jd-qty').value, price: +$('#jd-price').value || 0, usd_value: +$('#jd-usd').value || 0,
+      fee: +$('#jd-fee').value || 0, fee_asset: $('#jd-fee-asset').value.trim() || null,
+      order_id: $('#jd-order').value.trim() || null,
+      created_at: $('#jd-date').value ? new Date($('#jd-date').value).toISOString() : null
+    };
+    if (!body.coin || !body.qty) { toast('Koin va miqdorni to\'ldiring'); return; }
+    if (side !== 'earn' && (!body.price || !body.usd_value)) { toast('Narx va summani to\'ldiring'); return; }
+    try {
+      const r = await post('/api/journal/confirm', body);
+      if (r.side === 'sell') {
+        toast(`Saqlandi. Sof natija: ${money(r.net_usd)}${r.over_sold ? ' — DIQQAT: pozitsiyadan ko\'p sotildi!' : ''}`);
+      } else toast('Saqlandi');
+      $('#j-draft').innerHTML = '';
       loadJournal();
-    }catch(e){toast(e.message);}
+    } catch (e) { toast(e.message); }
   };
 }
 
-// Foyda/zarar matni: fon rangi bilan (qizil/yashil) va yonida FOYDA/ZARAR yozuvi bilan
-function pnlTxt(usd,pct){
-  if(usd==null)return '<span class="muted">—</span>';
-  const cls=usd>0?'pos':(usd<0?'neg':'flat');
-  const label=usd>0?'FOYDA':(usd<0?'ZARAR':'');
-  const p=(pct==null)?'':` (${pct>=0?'+':''}${pct}%)`;
-  return `<span class="pnl-pill ${cls}">${label?label+' ':''}${money(usd)}${p}</span>`;
-}
-
-function pfCard(a){
-  const closed=!a.open;
-  const badge=closed?'badge-closed':'badge-hold';
-  let head=`<span class="badge ${badge}">${a.coin}</span>`;
-  // Miqdor faqat ma'noli bo'lsa ko'rsatiladi — $1 dan kam qoldiq umuman yozilmaydi
-  if(a.open)head+=`<span>${fmtP(a.qty)} ta</span>`;
-  else head+=`<span class="muted">yopilgan</span>`;
-
-  const bits=[];
-  bits.push(`<span class="muted">${fmtP(a.bought_qty)} ta olindi${a.earn_qty>0?` (shu jumladan earn'dan ${fmtP(a.earn_qty)} ta)`:''}</span>`);
-  if(a.sold_qty>0){
-    bits.push(`<span class="muted">${fmtP(a.sold_qty)} ta sotildi</span>`);
-    bits.push(pnlTxt(a.realized_usd,a.realized_pct));
+function pfCard(a) {
+  const bits = [];
+  bits.push(`<span class="soft"><span class="num key-num">${fmtP(a.bought_qty)}</span> ta olindi${a.earn_qty > 0 ? ` (shundan earn'dan ${fmtP(a.earn_qty)} ta)` : ''}</span>`);
+  bits.push(`<span class="soft">kiritilgan: <span class="num key-num">$${fmtS(a.buy_usd)}</span></span>`);
+  if (a.sold_qty > 0) {
+    bits.push(`<span class="soft">${fmtP(a.sold_qty)} ta sotildi</span>`);
+    bits.push(pnlTxt(a.realized_usd, a.realized_pct ?? 0));
   }
-  if(a.open){
-    bits.push(`<span class="muted">· qoldi ${fmtP(a.qty)} ta</span>`);
-    bits.push(`<span class="muted">o'rtacha narxi $${fmtS(a.avg_price)}</span>`);
-    bits.push(`<span class="muted">fiksatsiya qilinmagan summa: ${usd(a.value_usd)}</span>`);
-    bits.push(a.unrealized_usd==null
-      ? '<span class="muted">joriy narx olinmadi</span>'
-      : pnlTxt(a.unrealized_usd,a.unrealized_pct)+' <span class="muted">(fiksatsiya qilinmagan)</span>');
-  }else if(a.dust){
-    bits.push(`<span class="dust-note">qoldiq $1 dan kam — hisobga olinmaydi</span>`);
+  if (a.open) {
+    bits.push(`<span class="soft">qoldi ${fmtP(a.qty)} ta</span>`);
+    bits.push(`<span class="soft">o'rtacha: $${fmtS(a.avg_price)}</span>`);
+    bits.push(a.current_price ? `<span class="soft"><span class="live-dot"></span>Live: $${fmtS(a.current_price)}</span>` : '<span class="soft">Live: —</span>');
+    bits.push(a.unrealized_usd == null ? '<span class="soft">joriy narx olinmadi</span>'
+      : pnlTxt(a.unrealized_usd, a.unrealized_pct) + ' <span class="soft">(fiksatsiya qilinmagan)</span>');
   }
+  const preview = `<div class="form-row" style="gap:0.5rem 1.25rem;margin:0.35rem 0 0;font-size:0.85rem">${bits.join('')}</div>`;
 
-  return `<details class="acard" data-coin="${a.coin}">
-    <summary>
-      <div class="ahead">
-        <div class="row" style="gap:.5rem">${head}</div>
-        <span class="achev">▼</span>
+  return `
+    <div class="analysis-item" data-coin="${esc(a.coin)}" style="margin-bottom:0.75rem" onclick="pfToggle(this)">
+      <div class="analysis-header" style="flex-direction:column;align-items:stretch;gap:0">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div style="display:flex;align-items:center;gap:0.5rem">
+            <span style="font-weight:700;font-size:1.05rem">${esc(a.coin)}</span>
+            ${a.dust ? '<span class="badge badge-wait" style="font-size:0.6rem">Chang</span>' : ''}
+          </div>
+          <svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        ${preview}
       </div>
-      <div class="apreview"><div class="pf-line">${bits.join('')}</div></div>
-    </summary>
-    <div class="abody" id="j-entries-${a.coin}">Yuklanmoqda…</div>
-  </details>`;
-}
-
-const jEntryCache={};
-function bindEntries(root){
-  root.querySelectorAll('.acard').forEach(d=>{
-    d.addEventListener('toggle',async()=>{
-      if(!d.open)return;
-      const coin=d.dataset.coin;
-      const el=document.getElementById('j-entries-'+coin);
-      if(el.dataset.loaded)return;
-      const entries=await api('/api/journal/entries?coin='+coin);
-      entries.forEach(e=>jEntryCache[e.id]=e);
-      el.dataset.loaded='1';
-      el.innerHTML=`<div class="table-wrap"><table><thead><tr>
-        <th>Turi</th><th>Miqdor</th><th>Narx</th><th>Summa</th><th>Sof natija</th><th>Sana</th><th></th></tr></thead><tbody>${
-        entries.map(e=>jEntryRow(e,coin)).join('')
-        }</tbody></table></div>`;
-    });
-  });
-}
-function jEntryRow(e,coin){
-  const cost=(e.avg_cost_usd||0)*e.qty;
-  const pct=(e.net_usd!=null&&cost>0)?+(e.net_usd/cost*100).toFixed(2):null;
-  return `<tr id="jrow-${e.id}">
-    <td><span class="badge ${e.side==='buy'?'badge-hold':e.side==='earn'?'badge-purple':'badge-gray'}">${e.side==='buy'?'Xarid':e.side==='earn'?'Earn':'Sotish'}</span></td>
-    <td>${fmtP(e.qty)}</td><td>$${fmtS(e.price)}</td><td>${usd(e.usd_value)}</td>
-    <td>${e.net_usd!=null?pnlTxt(+e.net_usd.toFixed(2),pct):'<span class="muted">—</span>'}</td>
-    <td class="muted">${e.created_at.slice(0,10)}</td>
-    <td class="row" style="gap:.35rem;flex-wrap:nowrap">
-      <button class="sm secondary" onclick="jEditEntry(${e.id},'${coin}')">✎</button>
-      <button class="sm danger" onclick="jDelEntry(${e.id},'${coin}')">✕</button>
-    </td></tr>`;
-}
-window.jEditEntry=(id,coin)=>{
-  const e=jEntryCache[id];
-  if(!e)return;
-  const row=document.getElementById('jrow-'+id);
-  row.innerHTML=`<td colspan="6">
-      <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:.6rem;margin-bottom:.6rem">
-        <div class="form-group"><label>Miqdor</label><input id="je-qty-${id}" type="number" step="any" value="${e.qty}"></div>
-        <div class="form-group"><label>Narx ($)</label><input id="je-price-${id}" type="number" step="any" value="${e.price}"></div>
-        <div class="form-group"><label>Summa ($)</label><input id="je-usd-${id}" type="number" step="any" value="${e.usd_value}"></div>
-        <div class="form-group"><label>Komissiya</label><input id="je-fee-${id}" type="number" step="any" value="${e.fee||0}"></div>
-        <div class="form-group"><label>Sana</label><input id="je-date-${id}" type="datetime-local" value="${(e.created_at||'').slice(0,16)}"></div>
+      <div class="analysis-body" onclick="event.stopPropagation()">
+        ${a.open ? `<div style="margin-bottom:0.75rem;display:flex;justify-content:space-between">
+          <span class="muted">Qiymat: <span class="num">$${fmtS(a.value_usd)}</span></span>
+        </div>` : ''}
+        <div id="j-entries-${esc(a.coin)}" data-loaded="">Yuklanmoqda…</div>
       </div>
-      <div class="row"><button class="sm" onclick="jSaveEntry(${id},'${coin}')">Saqlash</button>
-      <button class="sm secondary" onclick="jCancelEdit(${id},'${coin}')">Bekor qilish</button></div>
-    </td>`;
-};
-window.jCancelEdit=(id,coin)=>{
-  document.getElementById('jrow-'+id).outerHTML=jEntryRow(jEntryCache[id],coin);
-};
-window.jSaveEntry=async(id,coin)=>{
-  const body={qty:+document.getElementById('je-qty-'+id).value,
-    price:+document.getElementById('je-price-'+id).value||0,
-    usd_value:+document.getElementById('je-usd-'+id).value||0,
-    fee:+document.getElementById('je-fee-'+id).value||0,
-    fee_asset:jEntryCache[id].fee_asset,
-    created_at:document.getElementById('je-date-'+id).value
-      ?new Date(document.getElementById('je-date-'+id).value).toISOString():null};
-  if(!body.qty){toast('Miqdorni kiriting');return;}
-  try{
-    await api(`/api/journal/entries/${id}`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-    toast('Yangilandi');
-    document.getElementById('j-entries-'+coin).dataset.loaded='';
-    loadJournal();loadSummary();
-  }catch(e){toast(e.message);}
-};
-
-async function loadJournal(){
-  const items=await api('/api/journal/portfolio');
-  const open=items.filter(a=>a.open);
-  const closed=items.filter(a=>!a.open);
-  $('#j-positions').innerHTML=open.length?open.map(pfCard).join('')
-    :'<div class="muted">Amaldagi koin yo\'q.</div>';
-  $('#j-history').innerHTML=closed.length?closed.map(pfCard).join('')
-    :'<div class="muted">Hali yopilgan savdo yo\'q.</div>';
-  bindEntries($('#j-positions'));
-  bindEntries($('#j-history'));
+    </div>`;
 }
-window.jDelEntry=async(id,coin)=>{
-  if(!confirm('Bu yozuvni o\'chirasizmi? Pozitsiya qayta hisoblanadi.'))return;
-  await api(`/api/journal/entries/${id}`,{method:'DELETE'});
-  document.getElementById('j-entries-'+coin).dataset.loaded='';
-  loadJournal();loadSummary();
+
+window.pfToggle = async el => {
+  el.classList.toggle('open');
+  if (!el.classList.contains('open')) return;
+  const coin = el.dataset.coin;
+  const box = $('#j-entries-' + coin);
+  if (box.dataset.loaded === '1') return;
+  box.dataset.loaded = '1';
+  const entries = await api(`/api/journal/entries?coin=${coin}`);
+  entries.forEach(e => { jEntryCache[e.id] = e; });
+  box.innerHTML = `<div class="table-wrap"><table class="data-table"><thead><tr><th>Turi</th><th>Miqdor</th><th>Narx</th><th>Summa</th><th>Komissiya</th><th>Sof natija</th><th>Sana</th><th></th></tr></thead><tbody>${entries.map(e => jEntryRow(e, coin)).join('')}</tbody></table></div>`;
 };
 
-// ---- AI Trader ----
-let trSet={};
-async function loadTrader(){
-  trSet=await api('/api/settings');
-  const on=trSet.trader_enabled==='1';
-  const tb=$('#tr-toggle');
-  tb.textContent=on?'AI Trader: YONIQ':'AI Trader: O\'CHIQ';
-  tb.className='fbtn '+(on?'on-green':'');
-  $('#tr-mode-paper').className='fbtn '+(trSet.trader_mode==='paper'?'on':'');
-  $('#tr-mode-real').className='fbtn '+(trSet.trader_mode==='real'?'on-green':'');
-  $('#tr-max-usd').value=trSet.trader_max_usd;
-  $('#tr-max-daily').value=trSet.trader_max_daily;
-  $('#tr-min-conf').value=trSet.trader_min_conf||70;
-  $('#tr-max-open').value=trSet.trader_max_open||2;
-  $('#tr-cooldown').value=trSet.trader_cooldown_h||24;
-  $('#tr-max-stops').value=trSet.trader_max_stops||2;
-  $('#tr-watch-min').value=trSet.trader_watch_min||5;
+window.jDelEntry = async (id, coin) => {
+  if (!confirm('Bu yozuvni o\'chirasizmi?')) return;
+  await api(`/api/journal/entries/${id}`, { method: 'DELETE' });
+  loadJournal(); loadSummary();
+};
 
-  const fastOn=trSet.trader_fast_enabled==='1';
-  const fb=$('#tf-toggle');
-  fb.textContent=fastOn?'Tezkor: YONIQ':'Tezkor: O\'CHIQ';
-  fb.className='fbtn '+(fastOn?'on-green':'');
-  $('#tf-interval').value=trSet.trader_fast_interval_min||20;
-  $('#tf-max-usd').value=trSet.trader_fast_max_usd||10;
-  $('#tf-max-daily').value=trSet.trader_fast_max_daily||6;
-  $('#tf-min-conf').value=trSet.trader_fast_min_conf||65;
-  $('#tf-max-open').value=trSet.trader_fast_max_open||2;
-  $('#tf-cooldown').value=trSet.trader_fast_cooldown_h||2;
-  $('#tf-max-stops').value=trSet.trader_fast_max_stops||3;
-  $('#tr-swing-status').innerHTML=fastOn
-    ?'<span class="negative">⏸ Hozir uzilgan — tezkor savdo yoniq bo\'lgani uchun bosh tahlil savdo qilmaydi.</span>'
-    :'<span class="positive">● Faol — bosh tahlil xulosasiga qarab savdo qiladi.</span>';
-
-  const l=await api('/api/trader/log');
-  const trLog=$('#tr-log');
-  const d=l.decision;
-  if(d&&d.log){
-    trLog.style.display='block';
-    const kindTxt={swing:"asosiy (swing) tahlil",long:"uzoq muddatli tahlil",fast:"tezkor tahlil"}[d.kind]||d.kind;
-    const modeTxt=d.mode==='auto'?'avtomatik':"qo'lda";
-    const when=d.at?new Date(d.at).toLocaleString('uz-UZ',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'';
-    trLog.innerHTML=`<div class="muted" style="margin-bottom:.3rem">${esc(d.coin||'')} · ${kindTxt} · ${modeTxt}${when?' · '+when:''}</div>
-      <b>So'nggi qaror:</b> ${esc(d.log)}`;
-  }else if(l.log){
-    trLog.style.display='block';
-    trLog.innerHTML=`<b>So'nggi qaror:</b> ${esc(l.log)}`;
-  }else{trLog.style.display='none';trLog.textContent='';}
-  $('#tf-log').textContent=l.fast_log?('Oxirgi jarayon: '+l.fast_log):'Hali ishga tushmagan.';
-  try{
-    const sch=await api('/api/schedule');
-    $('#tr-watch-info').innerHTML=sch.watch_next
-      ?`<span class="status-chip info"><span class="dot"></span>Kuzatuvchi yoniq — har ${sch.watch_min} daqiqada tekshiradi. Keyingi: <b>${sch.watch_next}</b></span>`:'';
-    $('#tf-status').innerHTML=sch.fast_enabled&&sch.fast_next
-      ?`<span class="status-chip on"><span class="dot"></span>Yoniq — har ${sch.fast_min} daqiqada tekshiradi. Keyingi: <b>${sch.fast_next}</b></span>`
-      :`<span class="status-chip off"><span class="dot"></span>O'chiq</span>`;
-  }catch(e){}
+function portfolioSummary(items) {
+  if (!items.length) return '';
+  const invested = items.reduce((s, a) => s + (a.buy_usd || 0), 0);
+  const pnl = items.reduce((s, a) => s + (a.open ? (a.unrealized_usd || 0) : (a.realized_usd || 0)), 0);
+  const pct = invested ? pnl / invested * 100 : 0;
+  return `<div style="padding:0.5rem 0.25rem 1rem;margin-bottom:0.5rem;border-bottom:1px solid var(--border)">
+    <div class="form-row" style="justify-content:space-between;margin:0;align-items:baseline">
+      <span class="muted">Jami kiritilgan: <b class="num" style="color:var(--text);font-size:1.05rem">$${fmtS(invested)}</b></span>
+      ${pnlTxt(pnl, pct)}
+    </div>
+  </div>`;
 }
-$('#tr-toggle').onclick=async()=>{
-  const on=trSet.trader_enabled==='1';
-  if(!on&&!confirm('AI Trader yoqilsinmi? Bosh tahlil yoki tezkor rejim (qaysi yoniq bo\'lsa) avtomatik savdo qiladi.'))return;
-  await post('/api/settings',{trader_enabled:on?'0':'1'});loadTrader();
-};
-$('#tr-mode-paper').onclick=async()=>{await post('/api/settings',{trader_mode:'paper'});toast('Sinov rejimi');loadTrader();};
-$('#tr-mode-real').onclick=async()=>{
-  if(!confirm('DIQQAT: Haqiqiy rejim — Binance hisobingizda REAL pul bilan savdo qilinadi. Davom etasizmi?'))return;
-  if(!confirm('Ikkinchi tasdiq: kalitda pul chiqarish (withdrawal) ruxsati O\'CHIQ ekaniga ishonchingiz komilmi?'))return;
-  await post('/api/settings',{trader_mode:'real'});toast('Haqiqiy rejim yoqildi');loadTrader();
-};
-$('#tr-save').onclick=async()=>{
-  await post('/api/settings',{trader_max_usd:$('#tr-max-usd').value,
-    trader_max_daily:$('#tr-max-daily').value,
-    trader_min_conf:$('#tr-min-conf').value,
-    trader_max_open:$('#tr-max-open').value,
-    trader_cooldown_h:$('#tr-cooldown').value,
-    trader_max_stops:$('#tr-max-stops').value,
-    trader_watch_min:$('#tr-watch-min').value});
-  toast('Saqlandi');loadTrader();
-};
-$('#tr-watch-now').onclick=async()=>{
-  toast('Tekshirilmoqda…');
-  try{
-    const r=await api('/api/trader/watch',{method:'POST'});
-    toast(r.logs.length?r.logs.join(' | '):'Hech bir pozitsiya stop yoki maqsadga yetmadi');
-    loadTraderTrades();
-  }catch(e){toast(e.message);}
-};
-$('#tr-binance-test').onclick=async()=>{
-  $('#tr-binance-result').textContent='Tekshirilmoqda…';
-  const r=await api('/api/trader/binance_test');
-  $('#tr-binance-result').innerHTML=r.ok
-    ?`<span class="positive">✓ Ulandi. Bo'sh USDT: ${usd(r.usdt_free)}</span>`
-    :`<span class="negative">✗ ${esc(r.error)}</span>`;
-};
 
-// ---- Tezkor savdo ----
-$('#tf-toggle').onclick=async()=>{
-  const on=trSet.trader_fast_enabled==='1';
-  if(!on&&!confirm('Tezkor savdo yoqilsinmi? Bosh tahlildan UZILADI — kunlik 2 martalik '+
-    'tahlil savdo qilmay qo\'yadi, uning o\'rniga shu tizim kun davomida mustaqil ishlaydi.'))return;
-  if(on&&!confirm('Tezkor savdo o\'chirilsinmi? Bosh tahlil qaytadan savdoga ulanadi.'))return;
-  await post('/api/settings',{trader_fast_enabled:on?'0':'1'});loadTrader();
-};
-$('#tf-save').onclick=async()=>{
-  await post('/api/settings',{trader_fast_interval_min:$('#tf-interval').value,
-    trader_fast_max_usd:$('#tf-max-usd').value,
-    trader_fast_max_daily:$('#tf-max-daily').value,
-    trader_fast_min_conf:$('#tf-min-conf').value,
-    trader_fast_max_open:$('#tf-max-open').value,
-    trader_fast_cooldown_h:$('#tf-cooldown').value,
-    trader_fast_max_stops:$('#tf-max-stops').value});
-  toast('Saqlandi');loadTrader();
-};
-$('#tf-now').onclick=async()=>{
-  const btn=$('#tf-now');btn.disabled=true;btn.textContent='Tekshirilmoqda…';
-  $('#tf-log').textContent='Tekshirilmoqda — AI so\'roviga qarab bir necha soniya davom etadi…';
-  try{
-    const r=await api('/api/trader/fast_now',{method:'POST'});
-    toast(r.logs.length?r.logs.join(' | '):'Hech bir koin bo\'yicha savdo ochilmadi');
-    loadTrader();loadTraderTrades();renderAnalyses('fast','#tf-analyses','Hali tezkor tahlil yo\'q.');
-  }catch(e){toast(e.message);$('#tf-log').textContent='Xatolik: '+e.message;}
-  finally{btn.disabled=false;btn.textContent='Hozir ishga tushirish';}
-};
+async function loadJournal() {
+  const [items, js, jStats] = await Promise.all([
+    api('/api/journal/portfolio'), api('/api/journal/summary'), api('/api/journal/stats')
+  ]);
+  $('#j-sum-count').textContent = js.coin_count;
+  $('#j-sum-sub').textContent = `${js.open_count} ochiq · ${js.closed_count} yopilgan · ${js.entry_count} operatsiya`;
+  $('#j-sum-open').textContent = js.open_count;
+  const net = $('#j-sum-net');
+  net.textContent = money(jStats.total_net_usd || 0);
+  net.className = 'value num ' + ((jStats.total_net_usd || 0) >= 0 ? 'positive' : 'negative');
+  $('#j-sum-net-pct').textContent = jStats.sell_count ? `${jStats.total_net_pct >= 0 ? '+' : ''}${jStats.total_net_pct}%` : 'hali sotish yo\'q';
 
-async function loadTraderTrades(){
-  const [trades,prices]=await Promise.all([api('/api/trader/trades'),api('/api/prices')]);
-  const open=trades.filter(t=>!t.exit_price),closed=trades.filter(t=>t.exit_price);
-  const modeBadge=t=>` <span class="badge ${t.mode==='real'?'badge-buy':'badge-gray'}">${t.mode==='real'?'haqiqiy':'sinov'}</span>`;
-  const sessBadge=t=>t.session==='fast'?' <span class="badge badge-purple">tezkor</span>'
-    :' <span class="badge badge-blue">bosh</span>';
-  const tgt1=t=>{try{const a=JSON.parse(t.targets||'[]');return a.length?a[0]:null;}catch(e){return null;}};
-  $('#tr-open').innerHTML=open.length?`<div class="table-wrap"><table><thead><tr>
-    <th>Koin</th><th>Kirish</th><th>Stop</th><th>Maqsad</th><th>Joriy</th>
-    <th>Jonli natija</th><th></th></tr></thead><tbody>${
-    open.map(t=>`<tr><td><b>${t.coin}</b>${modeBadge(t)}${sessBadge(t)}</td>
-      <td>$${fmtS(t.entry_price)}</td>
-      <td class="negative">${t.stop?'$'+fmtS(t.stop):'—'}</td>
-      <td class="positive">${tgt1(t)?'$'+fmtS(tgt1(t)):'—'}</td>
-      <td>${prices[t.coin]?'$'+fmtS(prices[t.coin]):'—'}</td>
-      <td>${liveCell(t,prices[t.coin])}</td>
-      <td><button class="sm" onclick="trClose(${t.id})">Yopish</button></td></tr>`).join('')
-    }</tbody></table></div>`:'<p class="muted">Ochiq AI savdo yo\'q</p>';
-  const REASON={stop:['Stop','badge-sell'],target:['Maqsad','badge-buy'],
-                ai:['Hakam','badge-blue'],manual:["Qo'lda",'badge-gray']};
-  const rBadge=t=>{const r=REASON[t.close_reason]||['—','badge-gray'];
-    return `<span class="badge ${r[1]}">${r[0]}</span>`;};
-  $('#tr-closed').innerHTML=closed.length?`<div class="table-wrap"><table><thead><tr>
-    <th>Koin</th><th>Kirish → Chiqish</th><th>Summa</th><th>Sof natija</th>
-    <th>Nega yopildi</th><th>Sana</th></tr></thead><tbody>${
-    closed.map(t=>`<tr><td><b>${t.coin}</b>${modeBadge(t)}${sessBadge(t)}</td>
-      <td>$${fmtS(t.entry_price)} → $${fmtS(t.exit_price)}</td><td>$${t.amount_usd}</td>
-      <td><span class="${t.net_usd>=0?'positive':'negative'}">${money(t.net_usd)} (${t.net_pct>=0?'+':''}${t.net_pct}%)</span></td>
+  const open = items.filter(a => a.open);
+  const closed = items.filter(a => !a.open);
+  $('#j-positions').innerHTML = (open.length ? portfolioSummary(open) : '') + (open.length ? open.map(pfCard).join('') : '<div class="bento-card" style="text-align:center;padding:2rem"><p class="muted">Amaldagi koin yo\'q.</p></div>');
+  $('#j-history-list').innerHTML = (closed.length ? portfolioSummary(closed) : '') + (closed.length ? closed.map(pfCard).join('') : '<div class="bento-card" style="text-align:center;padding:2rem"><p class="muted">Hali yopilgan savdo yo\'q.</p></div>');
+  $('#j-history-count').textContent = closed.length ? `(${closed.length})` : '';
+}
+
+async function loadSummary() {
+  const [a, t, s] = await Promise.all([
+    api('/api/stats/analyses?period=all'),
+    api('/api/journal/stats?period=all'),
+    api('/api/journal/summary')
+  ]);
+  $('#sum-analyses').textContent = a.total;
+  const net = $('#sum-net');
+  net.textContent = money(t.total_net_usd);
+  net.className = 'value num ' + (t.total_net_usd >= 0 ? 'positive' : 'negative');
+  $('#sum-net-pct').textContent = (t.total_net_pct >= 0 ? '+' : '') + t.total_net_pct + '%';
+  $('#sum-open').textContent = s.open_count;
+}
+
+let trSet = {};
+async function loadTrader() {
+  trSet = await api('/api/settings');
+  const on = trSet.trader_enabled === '1';
+  const tb = $('#tr-toggle');
+  tb.textContent = on ? '✅ YONIQ' : '⏸ O\'CHIQ';
+  tb.className = on ? 'btn btn-primary' : 'btn btn-secondary';
+  
+  $('#tr-mode-paper').className = trSet.trader_mode === 'paper' ? 'btn btn-warning' : 'btn btn-secondary';
+  $('#tr-mode-real').className = trSet.trader_mode === 'real' ? 'btn btn-primary' : 'btn btn-secondary';
+  
+  $('#tr-max-usd').value = trSet.trader_max_usd;
+  $('#tr-max-daily').value = trSet.trader_max_daily;
+  $('#tr-min-conf').value = trSet.trader_min_conf || 70;
+  $('#tr-max-open').value = trSet.trader_max_open || 2;
+  $('#tr-cooldown').value = trSet.trader_cooldown_h || 24;
+  $('#tr-max-stops').value = trSet.trader_max_stops || 2;
+  $('#tr-watch-min').value = trSet.trader_watch_min || 5;
+
+  const fastOn = trSet.trader_fast_enabled === '1';
+  const fb = $('#tf-toggle');
+  fb.textContent = fastOn ? '✅ Tezkor: YONIQ' : '⏸ Tezkor: O\'CHIQ';
+  fb.className = fastOn ? 'btn btn-primary' : 'btn btn-secondary';
+  $('#tf-status').textContent = fastOn ? 'Bosh tahlildan uzilgan, mustaqil ishlaydi.' : 'Bosh tahlil xulosasiga qarab savdo qiladi.';
+  $('#tf-interval').value = trSet.trader_fast_interval_min || 20;
+  $('#tf-max-usd').value = trSet.trader_fast_max_usd || 10;
+  $('#tf-max-daily').value = trSet.trader_fast_max_daily || 6;
+  $('#tf-min-conf').value = trSet.trader_fast_min_conf || 65;
+  $('#tf-max-open').value = trSet.trader_fast_max_open || 2;
+  $('#tf-cooldown').value = trSet.trader_fast_cooldown_h || 2;
+  $('#tf-max-stops').value = trSet.trader_fast_max_stops || 3;
+
+  try {
+    const sch = await api('/api/schedule');
+    $('#tr-watch-info').innerHTML = sch.watch_next ? `<span class="badge badge-info">Kuzatuvchi yoniq — har ${sch.watch_min} daqiqada. Keyingi: ${sch.watch_next}</span>` : '';
+  } catch (e) {}
+
+  const l = await api('/api/trader/log');
+  const trLog = $('#tr-log');
+  const d = l.decision;
+  if (d && d.log) {
+    trLog.style.display = 'block';
+    trLog.innerHTML = `<div class="muted" style="margin-bottom:0.3rem">${esc(d.coin || '')} · ${d.kind} · ${d.mode}${d.at ? ' · ' + new Date(d.at).toLocaleString('uz-UZ') : ''}</div><b>So'nggi qaror:</b> ${esc(d.log)}`;
+  } else if (l.log) {
+    trLog.style.display = 'block';
+    trLog.innerHTML = `<b>So'nggi qaror:</b> ${esc(l.log)}`;
+  } else { trLog.style.display = 'none'; }
+
+  loadTraderTrades();
+}
+
+async function loadTraderTrades() {
+  const [trades, prices] = await Promise.all([api('/api/trader/trades'), api('/api/prices')]);
+  const open = trades.filter(t => !t.exit_price), closed = trades.filter(t => t.exit_price);
+  const modeBadge = t => ` <span class="badge ${t.mode === 'real' ? 'badge-buy' : 'badge-wait'}">${t.mode === 'real' ? 'haqiqiy' : 'sinov'}</span>`;
+  const sessBadge = t => t.session === 'fast' ? ' <span class="badge badge-info">tezkor</span>' : ' <span class="badge badge-info">bosh</span>';
+  const tgt1 = t => { try { const a = JSON.parse(t.targets || '[]'); return a.length ? a[0] : null; } catch (e) { return null; } };
+  
+  $('#tr-open').innerHTML = open.length ? `<div class="bento-card"><div style="overflow-x:auto"><table class="data-table"><thead><tr>
+    <th>Koin</th><th>Kirish</th><th>Stop</th><th>Maqsad</th><th>Joriy</th><th></th></tr></thead><tbody>${
+    open.map(t => `<tr><td><b>${t.coin}</b>${modeBadge(t)}${sessBadge(t)}</td>
+      <td class="num">$${fmtS(t.entry_price)}</td>
+      <td class="num negative">${t.stop ? '$' + fmtS(t.stop) : '—'}</td>
+      <td class="num positive">${tgt1(t) ? '$' + fmtS(tgt1(t)) : '—'}</td>
+      <td class="num">${prices[t.coin] ? '$' + fmtS(prices[t.coin]) : '—'}</td>
+      <td><button class="btn btn-sm btn-danger" onclick="trClose(${t.id})">Yopish</button></td></tr>`).join('')
+    }</tbody></table></div></div>` : '<div class="bento-card" style="text-align:center;padding:2rem"><p class="muted">Ochiq AI savdo yo\'q</p></div>';
+  
+  const REASON = { stop: ['Stop', 'badge-sell'], target: ['Maqsad', 'badge-buy'], ai: ['Hakam', 'badge-info'], manual: ["Qo'lda", 'badge-wait'] };
+  const rBadge = t => { const r = REASON[t.close_reason] || ['—', 'badge-wait']; return `<span class="badge ${r[1]}">${r[0]}</span>`; };
+  
+  $('#tr-closed').innerHTML = closed.length ? `<div class="bento-card"><div style="overflow-x:auto"><table class="data-table"><thead><tr>
+    <th>Koin</th><th>Kirish → Chiqish</th><th>Summa</th><th>Sof natija</th><th>Nega yopildi</th><th>Sana</th></tr></thead><tbody>${
+    closed.map(t => `<tr><td><b>${t.coin}</b>${modeBadge(t)}${sessBadge(t)}</td>
+      <td class="num">$${fmtS(t.entry_price)} → $${fmtS(t.exit_price)}</td><td class="num">$${t.amount_usd}</td>
+      <td class="num ${t.net_usd >= 0 ? 'positive' : 'negative'}">${money(t.net_usd)} (${t.net_pct >= 0 ? '+' : ''}${t.net_pct}%)</td>
       <td>${rBadge(t)}</td>
-      <td class="muted">${t.closed_at.slice(0,10)}</td></tr>`).join('')
-    }</tbody></table></div>`:'<p class="muted">Yopilgan AI savdo yo\'q</p>';
+      <td class="muted">${t.closed_at.slice(0, 10)}</td></tr>`).join('')
+    }</tbody></table></div></div>` : '<div class="bento-card" style="text-align:center;padding:2rem"><p class="muted">Yopilgan AI savdo yo\'q</p></div>';
 }
-window.trClose=async id=>{
-  if(!confirm('Bu AI pozitsiyasi joriy narxda yopilsinmi?'))return;
-  try{await api(`/api/trader/close/${id}`,{method:'POST'});toast('Yopildi');loadTraderTrades();}
-  catch(e){toast(e.message);}
+
+window.trClose = async id => {
+  if (!confirm('Bu AI pozitsiyasi joriy narxda yopilsinmi?')) return;
+  try { await api(`/api/trader/close/${id}`, { method: 'POST' }); toast('Yopildi'); loadTraderTrades(); }
+  catch (e) { toast(e.message); }
 };
 
-// ---- AI Trader statistikasi kartasi ----
-function journalBox(m){
-  if(!m.sell_count)return '<p class="muted">Hali sotilgan savdo yo\'q</p>';
-  const netCls=m.total_net_usd>=0?'positive':'negative';
-  const pf=m.profit_factor;
-  const pfCls=pf===null?'':(pf>=1.5?'positive':(pf<1?'negative':''));
-  const pfTxt=pf===null?'—':pf.toFixed(2);
-  return `<table class="tstat">
-    <tr><td>Sotish</td><td><b>${m.sell_count} ta</b></td>
-        <td class="muted">sotilgan $${m.sold_value_usd}</td></tr>
-    <tr><td>Foyda</td><td class="positive"><b>+$${m.gross_win_usd}</b></td>
-        <td class="positive">+${m.win_pct}% · ${m.win_count} ta</td></tr>
-    <tr><td>Zarar</td><td class="negative"><b>−$${m.gross_loss_usd}</b></td>
-        <td class="negative">−${m.loss_pct}% · ${m.loss_count} ta</td></tr>
-    <tr class="sum"><td>Sof natija</td><td class="${netCls}"><b>${money(m.total_net_usd)}</b></td>
-        <td class="${netCls}">${m.total_net_pct>=0?'+':''}${m.total_net_pct}%</td></tr>
-  </table>
-  <div class="koef">
-    <span>G'alaba: <b>${m.win_rate}%</b></span>
-    <span>Koeffitsient: <b class="${pfCls}">${pfTxt}</b></span>
-  </div>${journalMonthlyTable(m.monthly)}`;
+$('#tr-toggle').onclick = async () => {
+  const on = trSet.trader_enabled === '1';
+  if (!on && !confirm('AI Trader yoqilsinmi?')) return;
+  await post('/api/settings', { trader_enabled: on ? '0' : '1' }); loadTrader();
+};
+$('#tr-mode-paper').onclick = async () => { await post('/api/settings', { trader_mode: 'paper' }); toast('Sinov rejimi'); loadTrader(); };
+$('#tr-mode-real').onclick = async () => {
+  if (!confirm('DIQQAT: Haqiqiy rejim — REAL pul bilan savdo qilinadi. Davom etasizmi?')) return;
+  await post('/api/settings', { trader_mode: 'real' }); toast('Haqiqiy rejim yoqildi'); loadTrader();
+};
+$('#tr-save').onclick = async () => {
+  await post('/api/settings', {
+    trader_max_usd: $('#tr-max-usd').value, trader_max_daily: $('#tr-max-daily').value,
+    trader_min_conf: $('#tr-min-conf').value, trader_max_open: $('#tr-max-open').value,
+    trader_cooldown_h: $('#tr-cooldown').value, trader_max_stops: $('#tr-max-stops').value,
+    trader_watch_min: $('#tr-watch-min').value
+  });
+  toast('Saqlandi'); loadTrader();
+};
+$('#tr-watch-now').onclick = async () => {
+  toast('Tekshirilmoqda…');
+  try {
+    const r = await api('/api/trader/watch', { method: 'POST' });
+    toast(r.logs && r.logs.length ? r.logs.join(' | ') : 'Hech bir pozitsiya stop yoki maqsadga yetmadi');
+    loadTraderTrades();
+  } catch (e) { toast(e.message); }
+};
+$('#tr-binance-test').onclick = async () => {
+  $('#tr-binance-result').textContent = 'Tekshirilmoqda…';
+  const r = await api('/api/trader/binance_test');
+  $('#tr-binance-result').innerHTML = r.ok ? `<span class="positive">✓ Ulandi. Bo'sh USDT: $${fmtS(r.usdt_free)}</span>` : `<span class="negative">✗ ${esc(r.error)}</span>`;
+};
+$('#tf-toggle').onclick = async () => {
+  const on = trSet.trader_fast_enabled === '1';
+  if (!on && !confirm("Tezkor savdo yoqilsinmi? Bosh tahlildan UZILADI — kunlik 2 martalik tahlil savdo qilmay qo'yadi.")) return;
+  if (on && !confirm("Tezkor savdo o'chirilsinmi? Bosh tahlil qaytadan savdoga ulanadi.")) return;
+  await post('/api/settings', { trader_fast_enabled: on ? '0' : '1' }); loadTrader();
+};
+$('#tf-save').onclick = async () => {
+  await post('/api/settings', {
+    trader_fast_interval_min: $('#tf-interval').value, trader_fast_max_usd: $('#tf-max-usd').value,
+    trader_fast_max_daily: $('#tf-max-daily').value, trader_fast_min_conf: $('#tf-min-conf').value,
+    trader_fast_max_open: $('#tf-max-open').value, trader_fast_cooldown_h: $('#tf-cooldown').value,
+    trader_fast_max_stops: $('#tf-max-stops').value
+  });
+  toast('Saqlandi'); loadTrader();
+};
+$('#tf-now').onclick = async () => {
+  toast('Tekshirilmoqda…');
+  try {
+    const r = await api('/api/trader/fast_now', { method: 'POST' });
+    toast(r.logs && r.logs.length ? r.logs.join(' | ') : 'Savdo ochilmadi');
+    loadTrader();
+  } catch (e) { toast(e.message); }
+};
+
+const charts = {};
+const cssVar = name => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+function draw(id, cfg) {
+  if (charts[id]) charts[id].destroy();
+  cfg.options = Object.assign({ maintainAspectRatio: false, responsive: true }, cfg.options || {});
+  charts[id] = new Chart($('#' + id), cfg);
 }
-function journalMonthlyTable(rows){
-  const withTrades=(rows||[]).filter(r=>r.count>0);
-  if(!withTrades.length)return '';
-  return `<div class="table-wrap" style="margin-top:1rem"><table><thead><tr>
+let currentSess = 'all';
+
+function pnlTxt(usd, pct) {
+  const cls = usd >= 0 ? 'positive' : 'negative';
+  const p = (+pct).toFixed(2);
+  return `<span class="${cls}">${money(usd)} (${pct >= 0 ? '+' : ''}${p}%)</span>`;
+}
+
+function statTable(m, invLabel, invVal) {
+  const netCls = m.total_net_usd >= 0 ? 'positive' : 'negative';
+  const pf = m.profit_factor;
+  const pfCls = pf === null || pf === undefined ? '' : (pf >= 1.5 ? 'positive' : (pf < 1 ? 'negative' : ''));
+  const pfTxt = (pf === null || pf === undefined) ? '—' : pf.toFixed(2);
+  const wr = m.win_rate;
+  const wrCls = wr >= 50 ? 'positive' : 'negative';
+  return `
+  <table class="data-table">
+    <tr><td>${invLabel}</td><td class="num" style="text-align:right"><b>${(m.sell_count ?? m.closed_count)} ta</b></td>
+        <td class="muted" style="text-align:right">$${invVal}</td></tr>
+    <tr><td>Foyda</td><td class="num positive" style="text-align:right"><b>+$${m.gross_win_usd}</b></td>
+        <td class="positive" style="text-align:right">+${m.win_pct}% · ${m.win_count} ta</td></tr>
+    <tr><td>Zarar</td><td class="num negative" style="text-align:right"><b>−$${m.gross_loss_usd}</b></td>
+        <td class="negative" style="text-align:right">−${m.loss_pct}% · ${m.loss_count} ta</td></tr>
+    <tr style="border-top:2px solid var(--border)"><td><b>Sof natija</b></td><td class="num ${netCls}" style="text-align:right"><b>${money(m.total_net_usd)}</b></td>
+        <td class="${netCls}" style="text-align:right">${m.total_net_pct >= 0 ? '+' : ''}${m.total_net_pct}%</td></tr>
+  </table>
+  <div class="form-row" style="margin-top:0.75rem;justify-content:space-between">
+    <span class="muted">G'alaba: <b class="num ${wrCls}">${wr}%</b></span>
+    <span class="muted">Koeffitsient: <b class="num ${pfCls}">${pfTxt}</b></span>
+  </div>`;
+}
+
+function monthlyTable(rows) {
+  const withTrades = (rows || []).filter(r => r.count > 0);
+  if (!withTrades.length) return '';
+  return `<div class="table-wrap" style="margin-top:1rem"><table class="data-table"><thead><tr>
     <th>Oy</th><th>Savdolar</th><th>Sof natija</th></tr></thead><tbody>${
-    withTrades.map(r=>`<tr><td>${r.label}</td><td>${r.count} ta</td>
-      <td>${pnlTxt(r.net_usd,r.net_pct)}</td></tr>`).join('')
-    }</tbody></table></div>`;
-}
-function traderBox(m){
-  if(!m.closed_count)return '<p class="muted">Hali yopilgan savdo yo\'q</p>';
-  const netCls=m.total_net_usd>=0?'positive':'negative';
-  const pf=m.profit_factor;
-  const pfCls=pf===null?'':(pf>=1.5?'positive':(pf<1?'negative':''));
-  const pfTxt=pf===null?'—':pf.toFixed(2);
-  const r=m.reasons||{};
-  const rTxt=[['target','maqsad'],['stop','stop'],['ai','hakam'],['manual',"qo'lda"]]
-    .filter(([k])=>r[k]).map(([k,n])=>`${n}: ${r[k]}`).join(' · ');
-  return `<table class="tstat">
-    <tr><td>Savdo</td><td><b>${m.closed_count} ta</b></td>
-        <td class="muted">kiritilgan $${m.invested_usd}</td></tr>
-    <tr><td>Foyda</td><td class="positive"><b>+$${m.gross_win_usd}</b></td>
-        <td class="positive">+${m.win_pct}% · ${m.win_count} ta</td></tr>
-    <tr><td>Zarar</td><td class="negative"><b>−$${m.gross_loss_usd}</b></td>
-        <td class="negative">−${m.loss_pct}% · ${m.loss_count} ta</td></tr>
-    <tr class="sum"><td>Sof natija</td><td class="${netCls}"><b>${money(m.total_net_usd)}</b></td>
-        <td class="${netCls}">${m.total_net_pct>=0?'+':''}${m.total_net_pct}%</td></tr>
-  </table>
-  <div class="koef">
-    <span>G'alaba: <b>${m.win_rate}%</b></span>
-    <span>Koeffitsient: <b class="${pfCls}">${pfTxt}</b></span>
-  </div>
-  ${rTxt?`<p class="muted" style="margin-top:.4rem">Yopilish sabablari — ${rTxt}</p>`:''}`;
+    withTrades.map(r => `<tr><td>${esc(r.label)}</td><td class="num">${r.count} ta</td><td class="num">${pnlTxt(r.net_usd, r.net_pct)}</td></tr>`).join('')
+  }</tbody></table></div>`;
 }
 
-// ---- Statistika ----
-const charts={};
-function draw(id,cfg){if(charts[id])charts[id].destroy();charts[id]=new Chart($('#'+id),cfg);}
-async function loadStats(){
-  const period=$('#stat-period').value;
-  const [a,t,ai]=await Promise.all([
-    api('/api/stats/analyses?period='+period),api('/api/journal/stats?period='+period),
-    api('/api/stats/ai?period='+period)]);
+function reasonsLine(reasons) {
+  const r = reasons || {};
+  const map = [['target', 'maqsad'], ['stop', 'stop'], ['ai', 'hakam'], ['manual', "qo'lda"]];
+  const txt = map.filter(([k]) => r[k]).map(([k, n]) => `${n}: ${r[k]}`).join(' · ');
+  return txt ? `<p class="muted" style="margin-top:0.5rem;font-size:0.8rem">Yopilish sababi — ${esc(txt)}</p>` : '';
+}
 
-  $('#s-total').textContent=a.total;
-  $('#s-detail').textContent=`Amalga oshirilgan: ${a.applied} · Qo'llanmagan: ${a.not_applied} · Belgilanmagan: ${a.unmarked}`;
-  draw('ch-applied',{type:'doughnut',data:{labels:['Amalga oshirdim','Qo\'llamadim','Belgilanmagan'],
-    datasets:[{data:[a.applied,a.not_applied,a.unmarked],backgroundColor:['#10b981','#9ca3af','#e5e7eb']}]}});
-  draw('ch-outcome',{type:'doughnut',data:{labels:['O\'xshadi','O\'xshamadi','Kutilmoqda'],
-    datasets:[{data:[a.good,a.bad,a.pending],backgroundColor:['#10b981','#ef4444','#e5e7eb']}]}});
-  draw('ch-ai',{type:'bar',data:{labels:ai.map(x=>AI_NAMES[x.ai]||x.ai),
-    datasets:[{label:'To\'g\'ri',data:ai.map(x=>x.good),backgroundColor:'#10b981'},
-              {label:'Noto\'g\'ri',data:ai.map(x=>x.bad),backgroundColor:'#ef4444'}]},
-    options:{scales:{y:{beginAtZero:true,ticks:{precision:0}}}}});
-  draw('ch-monthly-a',{type:'bar',data:{labels:a.monthly.map(m=>m.month),
-    datasets:[{label:'O\'xshadi',data:a.monthly.map(m=>m.good),backgroundColor:'#10b981',maxBarThickness:36},
-              {label:'O\'xshamadi',data:a.monthly.map(m=>m.bad),backgroundColor:'#ef4444',maxBarThickness:36},
-              {label:'Jami',data:a.monthly.map(m=>m.total),backgroundColor:'#e5e7eb',maxBarThickness:36}]},
-    options:{scales:{y:{beginAtZero:true,ticks:{precision:0}}}}});
+async function loadStats() {
+  const period = $('#stat-period').value;
+  const [a, t, ai] = await Promise.all([
+    api('/api/stats/analyses?period=' + period),
+    api('/api/journal/stats?period=' + period),
+    api('/api/stats/ai?period=' + period)
+  ]);
 
-  $('#j-box').innerHTML=journalBox(t);
-  draw('ch-j-monthly',{type:'bar',data:{labels:t.monthly.map(m=>m.label),
-    datasets:[{label:'Sof natija ($)',data:t.monthly.map(m=>m.net_usd),
-      backgroundColor:t.monthly.map(m=>m.net_usd>=0?'#10b981':'#ef4444'),
-      maxBarThickness:48}]},
-    options:{scales:{x:{ticks:{maxRotation:45,minRotation:0}}},
-      plugins:{tooltip:{callbacks:{afterLabel:c=>{
-      const m=t.monthly[c.dataIndex];return `${m.net_pct>=0?'+':''}${m.net_pct}% · ${m.count} ta savdo`;}}}}}});
-  draw('ch-j-equity',{type:'line',data:{labels:t.equity.map(e=>e.date),
-    datasets:[{label:'Jamlangan $',data:t.equity.map(e=>e.cum_usd),borderColor:'#10b981',
-      backgroundColor:'rgba(16,185,129,.08)',tension:.25,fill:true}]}});
+  $('#s-total').textContent = a.total;
+  $('#s-win').textContent = (a.good + a.bad) > 0 ? Math.round((a.good / (a.good + a.bad)) * 100) + '%' : '0%';
+  
+  $('#s-detail').textContent = `Amalga oshirilgan: ${a.applied} · Qo'llanmagan: ${a.not_applied} · Belgilanmagan: ${a.unmarked}`;
+  draw('ch-applied', { type: 'doughnut', data: { labels: ["Amalga oshirdim", "Qo'llamadim", "Belgilanmagan"], datasets: [{ data: [a.applied, a.not_applied, a.unmarked], backgroundColor: ['#10b981', '#a1a1aa', '#27272a'], borderWidth: 3, borderColor: cssVar('--surface') }] }, options: { cutout: '60%', plugins: { legend: { position: 'bottom' } } } });
+  draw('ch-outcome', { type: 'doughnut', data: { labels: ['O\'xshadi', 'O\'xshamadi'], datasets: [{ data: [a.good, a.bad], backgroundColor: ['#10b981', '#f43f5e'], borderWidth: 3, borderColor: cssVar('--surface') }] }, options: { cutout: '70%', plugins: { legend: { position: 'bottom' } } } });
+  draw('ch-ai', { type: 'bar', data: { labels: ai.map(x => AI_NAMES[x.ai]), datasets: [{ label: 'To\'g\'ri', data: ai.map(x => x.good), backgroundColor: '#10b981', borderRadius: 4 }, { label: 'Noto\'g\'ri', data: ai.map(x => x.bad), backgroundColor: '#f43f5e', borderRadius: 4 }] }, options: { scales: { y: { beginAtZero: true, grid: { color: 'var(--border)' } }, x: { grid: { display: false } } }, plugins: { legend: { display: false } } } });
+
+  if (a.monthly && a.monthly.length) {
+    draw('ch-monthly-a', { type: 'bar', data: { labels: a.monthly.map(m => m.month), datasets: [
+      { label: 'O\'xshadi', data: a.monthly.map(m => m.good), backgroundColor: '#10b981', maxBarThickness: 36 },
+      { label: 'O\'xshamadi', data: a.monthly.map(m => m.bad), backgroundColor: '#f43f5e', maxBarThickness: 36 },
+      { label: 'Jami', data: a.monthly.map(m => m.total), backgroundColor: '#3f3f46', maxBarThickness: 36 }
+    ] }, options: { scales: { y: { beginAtZero: true, grid: { color: 'var(--border)' } }, x: { grid: { display: false } } }, plugins: { legend: { position: 'bottom' } } } });
+  }
+
+  if (t.sell_count > 0) {
+    $('#j-box').innerHTML = statTable(t, 'Sotish', t.sold_value_usd) + monthlyTable(t.monthly);
+    const jLast = t.equity.length ? t.equity[t.equity.length - 1].cum_usd : 0;
+    const jColor = jLast >= 0 ? '#10b981' : '#f43f5e';
+    draw('ch-j-equity', { type: 'line', data: { labels: t.equity.map(e => e.date), datasets: [{ label: 'Jamlangan $', data: t.equity.map(e => e.cum_usd), borderColor: jColor, backgroundColor: jColor + '1a', tension: 0.25, fill: true, pointRadius: 0 }] }, options: { plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: 'var(--border)' } } } } });
+  } else {
+    $('#j-box').innerHTML = '<p class="muted" style="text-align:center;padding:2rem">Hali yopilgan savdo yo\'q</p>';
+  }
 
   loadTraderStats(period, currentSess);
 
-  const [fa, fsum] = await Promise.all([
-    api('/api/stats/ai?period='+period+'&kind=fast'), api('/api/stats/fast_summary?period='+period)]);
-  $('#tf-summary').textContent=fsum.total
-    ?`So'nggi davrda ${fsum.total} ta tezkor tahlil, shulardan ${fsum.traded} tasi savdoga aylandi.`
-    :'Hali tezkor tahlil bo\'lmagan.';
-  draw('ch-fast-ai',{type:'bar',data:{labels:fa.map(x=>AI_NAMES[x.ai]||x.ai),
-    datasets:[{label:'To\'g\'ri',data:fa.map(x=>x.good),backgroundColor:'#10b981'},
-              {label:'Noto\'g\'ri',data:fa.map(x=>x.bad),backgroundColor:'#ef4444'}]},
-    options:{scales:{y:{beginAtZero:true,ticks:{precision:0}}}}});
+  try {
+    const [fa, fsum] = await Promise.all([
+      api('/api/stats/ai?period=' + period + '&kind=fast'), api('/api/stats/fast_summary?period=' + period)
+    ]);
+    $('#tf-summary').textContent = fsum.total
+      ? `So'nggi davrda ${fsum.total} ta tezkor tahlil, shulardan ${fsum.traded} tasi savdoga aylandi.`
+      : 'Hali tezkor tahlil bo\'lmagan.';
+    draw('ch-fast-ai', { type: 'bar', data: { labels: fa.map(x => AI_NAMES[x.ai] || x.ai), datasets: [{ label: 'To\'g\'ri', data: fa.map(x => x.good), backgroundColor: '#10b981', borderRadius: 4 }, { label: 'Noto\'g\'ri', data: fa.map(x => x.bad), backgroundColor: '#f43f5e', borderRadius: 4 }] }, options: { scales: { y: { beginAtZero: true, grid: { color: 'var(--border)' } }, x: { grid: { display: false } } }, plugins: { legend: { position: 'bottom' } } } });
+  } catch (e) {}
 }
-let currentSess='all';
-async function loadTraderStats(period, session){
-  const tr=session==='all'?await api('/api/trader/stats?period='+period)
-    :await api(`/api/trader/session_stats?session=${session}&period=${period}`);
-  $('#ts-paper').innerHTML=traderBox(tr.paper);
-  $('#ts-real').innerHTML=traderBox(tr.real);
-  draw('ch-tr-equity',{type:'line',data:{
-    labels:[...new Set([...tr.paper.equity.map(e=>e.date),...tr.real.equity.map(e=>e.date)])].sort(),
-    datasets:[
-      {label:'Sinov $',data:tr.paper.equity.map(e=>({x:e.date,y:e.cum_usd})),borderColor:'#f59e0b',tension:.25,parsing:{xAxisKey:'x',yAxisKey:'y'}},
-      {label:'Haqiqiy $',data:tr.real.equity.map(e=>({x:e.date,y:e.cum_usd})),borderColor:'#8b5cf6',tension:.25,parsing:{xAxisKey:'x',yAxisKey:'y'}}]},
-    options:{scales:{x:{type:'category'}}}});
-}
-document.querySelectorAll('.tab[data-sess]').forEach(t=>t.onclick=()=>{
-  document.querySelectorAll('.tab[data-sess]').forEach(x=>x.classList.remove('active'));
-  t.classList.add('active');currentSess=t.dataset.sess;
-  loadTraderStats($('#stat-period').value, currentSess);
-});
-$('#stat-period').onchange=loadStats;
 
-// ---- Sozlamalar ----
-let coinsState=[];
-function coinRow(c){
-  return `<div class="watchlist-item" draggable="true" data-symbol="${c.symbol}">
-       <div class="wl-left">
-         <span class="wl-handle" title="Sudrab tartiblang">⠿</span>
-         <button class="wl-star ${c.starred?'on':''}" title="Saralash"
-           onclick="toggleStar('${c.symbol}',${c.starred?'false':'true'})">${c.starred?'★':'☆'}</button>
-         <div><div class="coin-name">${c.symbol}/USDT</div>
-           <div class="coin-price">${c.auto?'Avto-tahlil: kuniga 2 marta':'Faqat kuzatuv'}</div></div>
-       </div>
-       <div class="row">
-         <button class="fbtn mini ${c.auto?'on-green':''}" onclick="toggleAuto('${c.symbol}',${c.auto?'false':'true'})">
-           ${c.auto?'Avto: yoniq':'Avto: o\'chiq'}</button>
-         <button class="sm danger" onclick="delCoin('${c.symbol}')">O'chirish</button>
-       </div></div>`;
+async function loadTraderStats(period, session) {
+  const tr = session === 'all' ? await api('/api/trader/stats?period=' + period) : await api(`/api/trader/session_stats?session=${session}&period=${period}`);
+  const paper = tr.paper, real = tr.real;
+  
+  const traderBox = (m, label) => {
+    if (!m.closed_count) return `<div class="bento-card" style="text-align:center;padding:2rem"><p class="muted">${label}: Hali yopilgan savdo yo\'q</p></div>`;
+    return `
+    <div class="bento-card">
+      <h3 style="margin-bottom:0.75rem">${label}</h3>
+      ${statTable(m, 'Savdo', m.invested_usd)}
+      ${reasonsLine(m.reasons)}
+    </div>`;
+  };
+  
+  $('#trader-stats').innerHTML = `<div class="bento-grid">${traderBox(paper, 'Sinov rejimi')}${traderBox(real, 'Haqiqiy rejim')}</div>`;
+  draw('ch-tr-equity', { type: 'line', data: {
+    labels: [...new Set([...paper.equity.map(e => e.date), ...real.equity.map(e => e.date)])].sort(),
+    datasets: [
+      { label: 'Sinov $', data: paper.equity.map(e => ({ x: e.date, y: e.cum_usd })), borderColor: '#f59e0b', tension: 0.25, pointRadius: 0, parsing: { xAxisKey: 'x', yAxisKey: 'y' } },
+      { label: 'Haqiqiy $', data: real.equity.map(e => ({ x: e.date, y: e.cum_usd })), borderColor: '#8b5cf6', tension: 0.25, pointRadius: 0, parsing: { xAxisKey: 'x', yAxisKey: 'y' } }
+    ]
+  }, options: { scales: { x: { type: 'category', grid: { display: false } }, y: { grid: { color: 'var(--border)' } } }, plugins: { legend: { position: 'bottom' } } } });
 }
-function renderCoinGroups(){
-  const starred=coinsState.filter(c=>c.starred);
-  const others=coinsState.filter(c=>!c.starred);
-  $('#coin-list-starred').innerHTML=starred.length?starred.map(coinRow).join('')
-    :'<p class="muted">Hali saralangan koin yo\'q — koin yonidagi ☆ ni bosing.</p>';
-  const wrap=$('#coin-others-wrap');
-  if(!others.length){wrap.style.display='none';}
-  else{
-    wrap.style.display='';
-    $('#coin-list-others').innerHTML=others.map(coinRow).join('');
-  }
+
+document.querySelectorAll('[data-sess]').forEach(btn => {
+  btn.onclick = () => {
+    document.querySelectorAll('[data-sess]').forEach(b => b.classList.remove('btn-primary'));
+    btn.classList.add('btn-primary');
+    currentSess = btn.dataset.sess;
+    loadTraderStats($('#stat-period').value, currentSess);
+  };
+});
+
+$('#stat-period').onchange = loadStats;
+
+let coinsState = [];
+async function loadSettings() {
+  const [coins, set] = await Promise.all([api('/api/coins'), api('/api/settings')]);
+  coinsState = coins;
+  
+  const opts = '<option value="">Barcha koinlar</option>' + coins.map(c => `<option>${c.symbol}</option>`).join('');
+  $('#manual-coin').innerHTML = opts;
+  $('#long-coin').innerHTML = opts;
+  $('#nima-coin').innerHTML = coins.map(c => `<option>${c.symbol}</option>`).join('') || '<option value="">Koin yo\'q</option>';
+  
+  $('#set-morning').value = set.schedule_morning;
+  $('#set-evening').value = set.schedule_evening;
+  $('#set-fee').value = set.fee_rate;
+  $('#set-profile').value = set.profile;
+  
+  let en = {}; try { en = JSON.parse(set.ai_enabled || '{}'); } catch (e) {}
+  $('#ai-list').innerHTML = ['qwen', 'deepseek', 'gpt', 'gemini'].map(id =>
+    `<div class="form-row" style="align-items:center;margin-bottom:0.5rem">
+       <div style="flex:1;font-weight:600">${AI_NAMES[id]}</div>
+       <button class="btn btn-sm ${en[id] ? 'btn-primary' : 'btn-secondary'}" onclick="toggleAi('${id}', ${!en[id]})">${en[id] ? 'Yoniq' : 'O\'chiq'}</button>
+     </div>`).join('') +
+    `<div class="form-row" style="align-items:center;margin-bottom:0.5rem">
+       <div style="flex:1;font-weight:600">Claude <span class="muted" style="font-weight:400">(hakam)</span></div>
+       <span class="badge badge-info">doim faol</span>
+     </div>`;
+  window._aiEnabled = en;
+  
+  renderCoinList();
+  loadTelegram(set);
+  loadSchedule();
+}
+
+function coinRow(c) {
+  return `<div class="coin-item" draggable="true" data-symbol="${c.symbol}">
+      <span class="coin-handle">⠿</span>
+      <div style="flex:1">
+        <div style="font-weight:700">${c.symbol}/USDT</div>
+        <div class="muted" style="font-size:0.8rem">${c.auto ? 'Avto-tahlil yoniq' : 'Faqat kuzatuv'}</div>
+      </div>
+      <button class="btn btn-sm ${c.starred ? 'btn-primary' : 'btn-secondary'}" onclick="toggleStar('${c.symbol}', ${!c.starred})">${c.starred ? '★' : '☆'}</button>
+      <button class="btn btn-sm ${c.auto ? 'btn-primary' : 'btn-secondary'}" onclick="toggleAuto('${c.symbol}', ${!c.auto})">${c.auto ? 'Avto: Yoniq' : 'Avto: O\'chiq'}</button>
+      <button class="btn btn-sm btn-danger" onclick="delCoin('${c.symbol}')">O'chirish</button>
+    </div>`;
+}
+
+function renderCoinList() {
+  const starred = coinsState.filter(c => c.starred);
+  const others = coinsState.filter(c => !c.starred);
+  $('#coin-list-starred').innerHTML = starred.length ? starred.map(coinRow).join('')
+    : '<p class="muted">Hali saralangan koin yo\'q — koin yonidagi ☆ ni bosing.</p>';
+  const wrap = $('#coin-others-wrap');
+  if (!others.length) { wrap.style.display = 'none'; }
+  else { wrap.style.display = ''; $('#coin-list-others').innerHTML = others.map(coinRow).join(''); }
+
   bindCoinDrag($('#coin-list-starred'));
   bindCoinDrag($('#coin-list-others'));
 }
-function bindCoinDrag(container){
-  let dragEl=null;
-  container.querySelectorAll('.watchlist-item').forEach(row=>{
-    row.ondragstart=()=>{dragEl=row;row.classList.add('dragging');};
-    row.ondragend=()=>{row.classList.remove('dragging');dragEl=null;persistCoinOrder();};
+
+function bindCoinDrag(container) {
+  let dragEl = null;
+  container.querySelectorAll('.coin-item').forEach(item => {
+    item.ondragstart = () => { dragEl = item; item.classList.add('dragging'); };
+    item.ondragend = () => { item.classList.remove('dragging'); dragEl = null; persistCoinOrder(); };
   });
-  container.ondragover=e=>{
+
+  container.ondragover = e => {
     e.preventDefault();
-    if(!dragEl||dragEl.parentElement!==container)return;
-    const after=[...container.querySelectorAll('.watchlist-item:not(.dragging)')]
-      .find(el=>e.clientY<el.getBoundingClientRect().top+el.getBoundingClientRect().height/2);
-    if(after)container.insertBefore(dragEl,after);
+    if (!dragEl || dragEl.parentElement !== container) return;
+    const after = [...container.querySelectorAll('.coin-item:not(.dragging)')]
+      .find(el => e.clientY < el.getBoundingClientRect().top + el.getBoundingClientRect().height / 2);
+    if (after) container.insertBefore(dragEl, after);
     else container.appendChild(dragEl);
   };
 }
-async function persistCoinOrder(){
-  const order=[...$('#coin-list-starred').querySelectorAll('.watchlist-item'),
-    ...$('#coin-list-others').querySelectorAll('.watchlist-item')].map(el=>el.dataset.symbol);
-  try{await post('/api/coins/reorder',{symbols:order});}catch(e){}
+
+async function persistCoinOrder() {
+  const order = [...$('#coin-list-starred').querySelectorAll('.coin-item'),
+    ...$('#coin-list-others').querySelectorAll('.coin-item')].map(el => el.dataset.symbol);
+  try { await post('/api/coins/reorder', { symbols: order }); } catch (e) {}
 }
-window.toggleStar=async(sym,starred)=>{
-  await post(`/api/coins/${sym}/starred`,{starred});
-  const c=coinsState.find(x=>x.symbol===sym);if(c)c.starred=starred;
-  renderCoinGroups();
+
+window.toggleStar = async (sym, starred) => {
+  await post(`/api/coins/${sym}/starred`, { starred });
+  const c = coinsState.find(x => x.symbol === sym); if (c) c.starred = starred;
+  renderCoinList();
 };
-async function loadSettings(){
-  const [coins,set]=await Promise.all([api('/api/coins'),api('/api/settings')]);
-  coinsState=coins;
-  renderCoinGroups();
-  const opts='<option value="">Barcha koinlar</option>'+coins.map(c=>`<option>${c.symbol}</option>`).join('');
-  $('#manual-coin').innerHTML=opts;$('#long-coin').innerHTML=opts;
-  $('#nima-coin').innerHTML=coins.map(c=>`<option>${c.symbol}</option>`).join('')||'<option value="">Koin yo\'q</option>';
-  $('#set-morning').value=set.schedule_morning;
-  $('#set-evening').value=set.schedule_evening;
-  $('#set-fee').value=set.fee_rate;
-  $('#set-profile').value=set.profile;
-  let en={};try{en=JSON.parse(set.ai_enabled||'{}');}catch(e){}
-  $('#ai-list').innerHTML=['qwen','deepseek','gpt','gemini'].map(id=>
-    `<div class="watchlist-item">
-       <div class="coin-name">${AI_NAMES[id]}</div>
-       <button class="fbtn mini ${en[id]?'on-green':''}" onclick="toggleAi('${id}',${en[id]?0:1})">
-         ${en[id]?'Yoniq':'O\'chiq'}</button>
-     </div>`).join('')+
-    `<div class="watchlist-item"><div class="coin-name">Claude <span class="muted">(hakam)</span></div>
-       <span class="badge badge-blue">doim faol</span></div>`;
-  window._aiEnabled=en;
-  loadSchedule();
-  loadTelegram(set);
-}
-let tgSet={};
-function loadTelegram(set){
-  tgSet=set;
-  const on=set.telegram_enabled==='1';
-  const b=$('#tg-toggle');
-  b.textContent=on?'Telegram: YONIQ':'Telegram: O\'CHIQ';
-  b.className='fbtn '+(on?'on-green':'');
-  const fastOn=set.telegram_notify_fast==='1';
-  const fb=$('#tg-fast-toggle');
-  fb.className='fbtn mini '+(fastOn?'on-green':'');
-}
-$('#tg-toggle').onclick=async()=>{
-  const on=tgSet.telegram_enabled==='1';
-  await post('/api/settings',{telegram_enabled:on?'0':'1'});
-  toast(on?"Telegram bildirishnomalari o'chirildi":'Telegram bildirishnomalari yoqildi');
+window.toggleAuto = async (c, auto) => {
+  await post(`/api/coins/${c}/auto`, { auto });
+  const coin = coinsState.find(x => x.symbol === c); if (coin) coin.auto = auto;
+  renderCoinList();
+};
+window.delCoin = async c => {
+  if (!confirm('Bu koinni o\'chirasizmi?')) return;
+  await api('/api/coins/' + c, { method: 'DELETE' });
   loadSettings();
 };
-$('#tg-fast-toggle').onclick=async()=>{
-  const on=tgSet.telegram_notify_fast==='1';
-  await post('/api/settings',{telegram_notify_fast:on?'0':'1'});
-  toast(on?"Tezkor signallar o'chirildi":'Tezkor signallar ham yuboriladi');
+
+$('#btn-add-coin').onclick = async () => {
+  try {
+    await post('/api/coins', { symbol: $('#new-coin').value });
+    $('#new-coin').value = ''; toast('Qo\'shildi'); loadSettings();
+  } catch (e) { toast(e.message); }
+};
+
+let tgSet = {};
+function loadTelegram(set) {
+  tgSet = set;
+  const on = set.telegram_enabled === '1';
+  $('#tg-toggle').textContent = on ? '✅ Telegram: YONIQ' : '⏸ Telegram: O\'CHIQ';
+  $('#tg-toggle').className = on ? 'btn btn-primary' : 'btn btn-secondary';
+}
+
+$('#tg-toggle').onclick = async () => {
+  const on = tgSet.telegram_enabled === '1';
+  await post('/api/settings', { telegram_enabled: on ? '0' : '1' });
+  toast(on ? "O'chirildi" : 'Yoqildi');
   loadSettings();
 };
-$('#tg-test').onclick=async()=>{
-  $('#tg-result').textContent='Tekshirilmoqda…';
-  $('#tg-users').textContent='';
-  const r=await api('/api/telegram/test',{method:'POST'});
-  $('#tg-result').innerHTML=r.ok
-    ?`<span class="positive">✓ Ulandi (@${esc(r.bot)}). ${r.sent} kishiga sinov xabari yuborildi.</span>`
-    :`<span class="negative">✗ ${esc(r.error)}</span>`;
-  if(r.ok)$('#tg-users').textContent=`Hozirda ${r.users} kishi ro'yxatda.`;
+$('#tg-test').onclick = async () => {
+  $('#tg-result').textContent = 'Tekshirilmoqda…';
+  const r = await api('/api/telegram/test', { method: 'POST' });
+  $('#tg-result').innerHTML = r.ok ? `<span class="positive">✓ Ulandi. ${r.sent} kishiga yuborildi.</span>` : `<span class="negative">✗ ${esc(r.error)}</span>`;
 };
-window.toggleAi=async(id,on)=>{
-  const en={...window._aiEnabled,[id]:on};
-  await post('/api/settings',{ai_enabled:JSON.stringify(en)});
-  toast(AI_NAMES[id]+(on?' yoqildi':' o\'chirildi'));loadSettings();
+
+window.toggleAi = async (id, on) => {
+  const en = { ...window._aiEnabled, [id]: on ? 1 : 0 };
+  await post('/api/settings', { ai_enabled: JSON.stringify(en) });
+  toast(AI_NAMES[id] + (on ? ' yoqildi' : ' o\'chirildi')); loadSettings();
 };
-$('#btn-ai-test').onclick=async()=>{
-  const el=$('#ai-test-result');
-  el.innerHTML='<span class="muted">Tekshirilmoqda… (30-60 soniya)</span>';
-  try{
-    const res=await api('/api/ai/test',{method:'POST'});
-    el.innerHTML=res.map(r=>`<div class="watchlist-item">
-      <div class="coin-name">${r.name}</div>
-      ${r.ok?'<span class="badge badge-buy">✓ ishlayapti</span>'
-        :`<span class="badge badge-sell">✗ ${esc(r.error)}</span>`}</div>`).join('');
-  }catch(e){el.innerHTML=`<span class="negative">${esc(e.message)}</span>`;}
+$('#btn-ai-test').onclick = async () => {
+  const el = $('#ai-test-result');
+  el.innerHTML = '<span class="muted">Tekshirilmoqda…</span>';
+  try {
+    const res = await api('/api/ai/test', { method: 'POST' });
+    el.innerHTML = res.map(r => `
+      <div class="form-row" style="align-items:center;margin-bottom:0.5rem">
+        <div style="flex:1;font-weight:600">${r.name}</div>
+        ${r.ok ? '<span class="badge badge-buy">Ishlayapti</span>' : `<span class="badge badge-sell">${esc(r.error)}</span>`}
+      </div>`).join('');
+  } catch (e) { el.innerHTML = `<span class="negative">${esc(e.message)}</span>`; }
 };
-$('#btn-add-coin').onclick=async()=>{
-  try{await post('/api/coins',{symbol:$('#new-coin').value});
-    $('#new-coin').value='';toast('Qo\'shildi — avto-tahlil o\'chiq holatda');loadSettings();
-  }catch(e){toast(e.message);}
+
+$('#btn-save-time').onclick = async () => {
+  await post('/api/settings', { schedule_morning: $('#set-morning').value, schedule_evening: $('#set-evening').value, fee_rate: $('#set-fee').value, profile: $('#set-profile').value });
+  toast('Saqlandi');
 };
-window.delCoin=async c=>{await api('/api/coins/'+c,{method:'DELETE'});loadSettings();};
-window.toggleAuto=async(c,auto)=>{
-  await post(`/api/coins/${c}/auto`,{auto});loadSettings();
-};
-$('#btn-save-set').onclick=async()=>{
-  await post('/api/settings',{fee_rate:$('#set-fee').value,profile:$('#set-profile').value});
-  toast('Saqlandi');loadSettings();
-};
-$('#btn-save-time').onclick=async()=>{
-  await post('/api/settings',{schedule_morning:$('#set-morning').value,
-    schedule_evening:$('#set-evening').value});
-  toast('Vaqtlar saqlandi');loadSchedule();
-};
-let autoOn=true;
-async function loadSchedule(){
-  const s=await api('/api/schedule');
-  autoOn=s.enabled;
-  const b=$('#auto-toggle');
-  b.textContent=autoOn?'Avtomatik tahlil: YONIQ':"Avtomatik tahlil: O'CHIQ";
-  b.className='fbtn '+(autoOn?'on-green':'');
-  $('#auto-next').innerHTML=autoOn&&s.next_runs.length
-    ?`<span class="status-chip info"><span class="dot"></span>Keyingi ishga tushish: <b>${s.next_runs[0]}</b></span>`:'';
+
+let autoOn = true;
+async function loadSchedule() {
+  try {
+    const s = await api('/api/schedule');
+    autoOn = s.enabled;
+    const b = $('#auto-toggle');
+    b.textContent = autoOn ? '✅ Avtomatik: YONIQ' : "⏸ Avtomatik: O'CHIQ";
+    b.className = 'btn btn-sm ' + (autoOn ? 'btn-primary' : 'btn-secondary');
+    $('#auto-next').innerHTML = autoOn && s.next_runs.length ? `<span class="badge badge-info">Keyingi: ${s.next_runs[0]}</span>` : '';
+  } catch (e) {}
 }
-$('#auto-toggle').onclick=async()=>{
-  await post('/api/settings',{auto_enabled:autoOn?'0':'1'});
-  toast(autoOn?"Avtomatik tahlil o'chirildi":'Avtomatik tahlil yoqildi');
+$('#auto-toggle').onclick = async () => {
+  await post('/api/settings', { auto_enabled: autoOn ? '0' : '1' });
+  toast(autoOn ? "Avtomatik tahlil o'chirildi" : 'Avtomatik tahlil yoqildi');
   loadSchedule();
 };
 
-// ---- Umumiy kalit ----
-let globalOn=true;
-async function loadGlobal(){
-  const s=await api('/api/settings');
-  globalOn=s.global_enabled!=='0';
-  const b=$('#global-toggle');
-  b.textContent=globalOn?'Ishlayapti':"To'xtatilgan";
-  b.className='global-btn '+(globalOn?'on':'off');
-  document.querySelectorAll('.global-warn').forEach(el=>el.style.display=globalOn?'none':'block');
-}
-$('#global-toggle').onclick=async()=>{
-  if(globalOn){
-    if(!confirm("DIQQAT: Ilovadagi BARCHA jarayonlar to'xtaydi — rejalashtirilgan tahlillar, "+
-      "AI Trader kuzatuvchisi (stop/maqsad tekshiruvi) va tezkor savdo. "+
-      "Agar hozir ochiq AI savdolaringiz bo'lsa, ular stopsiz qoladi — narx tushib ketsa "+
-      "hech kim to'xtatmaydi. Rostdan ham to'xtatasizmi?"))return;
-  }else{
-    if(!confirm("Barcha jarayonlar qaytadan yoniladi (avvalgi sozlamalar bo'yicha). Davom etasizmi?"))return;
+let globalOn = true;
+async function loadGlobal() {
+  const s = await api('/api/settings');
+  globalOn = s.global_enabled !== '0';
+  const dot = $('#global-dot');
+  const txt = $('#global-text');
+  const btn = $('#global-toggle');
+  
+  if (globalOn) {
+    dot.classList.add('on');
+    txt.textContent = 'Tizim Ishlayapti';
+    txt.style.color = 'var(--primary)';
+    btn.textContent = 'To\'xtatish';
+    btn.className = 'btn btn-sm btn-danger';
+  } else {
+    dot.classList.remove('on');
+    txt.textContent = 'To\'xtatilgan';
+    txt.style.color = 'var(--danger)';
+    btn.textContent = 'Yoqish';
+    btn.className = 'btn btn-sm btn-primary';
   }
-  await post('/api/settings',{global_enabled:globalOn?'0':'1'});
-  toast(globalOn?"Hammasi to'xtatildi":'Hammasi qayta yoqildi');
-  loadGlobal();loadSchedule();loadTrader();
+}
+$('#global-toggle').onclick = async () => {
+  if (globalOn) {
+    if (!confirm("DIQQAT: Barcha jarayonlar to'xtaydi. Rostdan ham to'xtatasizmi?")) return;
+  }
+  await post('/api/settings', { global_enabled: globalOn ? '0' : '1' });
+  toast(globalOn ? "To'xtatildi" : 'Qayta yoqildi');
+  loadGlobal();
 };
 
-// ---- PWA ----
-if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js');}
-
-// ---- Boshlash ----
-// ---- Tungi rejim ----
-function applyTheme(dark){
-  document.body.classList.toggle('dark',dark);
-  $('#theme-toggle').textContent=dark?'☀️':'🌙';
-  if(window.Chart){
-    Chart.defaults.color=dark?'#9aa0ac':'#666';
-    Chart.defaults.borderColor=dark?'#2b2f38':'#e5e7eb';
-    Object.values(charts).forEach(c=>c&&c.update());
+function applyTheme(dark) {
+  document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+  $('#theme-toggle').textContent = dark ? '🌙' : '☀️';
+  if (window.Chart) {
+    Chart.defaults.color = dark ? '#a1a1aa' : '#71717a';
+    Chart.defaults.borderColor = dark ? '#27272a' : '#e4e4e7';
+    Object.values(charts).forEach(c => c && c.update());
   }
 }
-let darkMode=localStorage.getItem('theme')==='dark';
+let darkMode = localStorage.getItem('theme') !== 'light';
 applyTheme(darkMode);
-$('#theme-toggle').onclick=()=>{
-  darkMode=!darkMode;
-  localStorage.setItem('theme',darkMode?'dark':'light');
+const toggleTheme = () => {
+  darkMode = !darkMode;
+  localStorage.setItem('theme', darkMode ? 'dark' : 'light');
   applyTheme(darkMode);
 };
+$('#theme-toggle').onclick = e => { e.stopPropagation(); toggleTheme(); };
+$('#theme-row').onclick = toggleTheme;
 
-loadAnalyses();loadSummary();loadSettings();loadTraderTrades();loadGlobal();pollStatus();
-// Oxirgi ochilgan bo'limni tiklaymiz — sahifa qayta yuklanganda "Tahlillar"ga
-// qaytib ketmasin. skipSave=true — chunki bu tanlov, foydalanuvchi bosgani emas.
-const savedPage=localStorage.getItem('lastPage');
-if(savedPage&&document.getElementById(savedPage))goToPage(savedPage,true);
 document.documentElement.classList.add('ready');
-setInterval(()=>{loadTraderTrades();},60000);
+const savedPage = localStorage.getItem('lastPage') || 'tahlil';
+goToPage(savedPage);
+window.addEventListener('load', () => window.scrollTo(0, 0));
+loadSummary();
+loadSettings();
+loadGlobal();
+pollStatus();
 </script>
 </body>
 </html>
